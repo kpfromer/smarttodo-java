@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class TestController {
+
     @ResponseBody
     @RequestMapping("/")
     public String home(){

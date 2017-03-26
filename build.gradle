@@ -28,6 +28,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE')
+    compile('org.apache.tomcat:tomcat-dbcp:8.0.30')
 
     runtime('com.h2database:h2')
     runtime('org.apache.httpcomponents:httpclient:4.5.2')
