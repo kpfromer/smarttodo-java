@@ -2,24 +2,26 @@ package com.smarttodo.model;
 
 import org.springframework.stereotype.Component;
 
+import javax.persistence.*;
+
 /**
  * Created by kpfro on 4/2/2017.
  */
 
-
+@Entity
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     private boolean complete;
 
-    public Task() {}
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Task(Long id, String description, boolean complete) {
-        this.id = id;
-        this.description = description;
-        this.complete = complete;
-    }
+    public Task() {}
 
     public Long getId() {
         return id;
@@ -44,4 +46,14 @@ public class Task {
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
 }

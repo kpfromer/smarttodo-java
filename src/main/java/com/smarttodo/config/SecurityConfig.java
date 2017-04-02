@@ -49,5 +49,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //todo: add CSRF Protection
     }
 
+    @Bean
+    public EvaluationContextExtension securityExtension(){
+        return new EvaluationContextExtensionSupport() {
+            @Override
+            public String getExtensionId() {
+                return "security";
+            }
+
+            @Override
+            public Object getRootObject() {
+                /*
+                * This will get the security expression root object, exposing all the details
+                * */
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                return new SecurityExpressionRoot(authentication) {};
+            }
+        };
+    }
 
 }
