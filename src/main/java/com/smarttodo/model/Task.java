@@ -56,4 +56,41 @@ public class Task {
     }
 
 
+    public static final class TaskBuilder {
+        private Long id;
+        private String description;
+        private boolean complete;
+        private User user;
+
+        public TaskBuilder() {
+        }
+
+        public static TaskBuilder aTask() {
+            return new TaskBuilder();
+        }
+
+        public TaskBuilder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public TaskBuilder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public TaskBuilder withComplete(boolean complete) {
+            this.complete = complete;
+            return this;
+        }
+
+
+        public Task build() {
+            Task task = new Task();
+            task.setId(id);
+            task.setDescription(description);
+            task.setComplete(complete);
+            return task;
+        }
+    }
 }

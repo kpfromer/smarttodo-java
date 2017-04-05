@@ -7,7 +7,7 @@ import com.smarttodo.model.Task;
  */
 public interface TaskService {
     Iterable<Task> findAll();
-    Task findOne(Long id);
+    Task findById(Long id);
     void toggleComplete(Long id);
     void save(Task task);
 }
