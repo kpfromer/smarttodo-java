@@ -15,7 +15,6 @@ import java.util.List;
  * Created by kpfro on 4/2/2017.
  */
 
-//todo: (NOTE: this is a learning experience for me) figure out how users work in relation to spring sessions
 @Entity
 public class User implements UserDetails {
 

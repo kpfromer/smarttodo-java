@@ -86,13 +86,13 @@ public class TaskServiceTest {
                 .withComplete(true)
                 .withDescription("Hello World")
                 .build();
+        when(dao.exists(null)).thenThrow(new IllegalArgumentException("Id can't be null"));
         service.save(task);
         try {
             verify(dao).saveForCurrentUser(task);
         } catch (MockitoAssertionError e){
             throw new MockitoAssertionError("was expecting a call to dao.saveForCurrentUser with a null Id");
         }
-        //todo: check that this works
     }
 
     @Test(expected = TaskAlreadyExistsException.class)

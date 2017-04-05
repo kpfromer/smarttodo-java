@@ -50,7 +50,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void save(Task task) {
-        //todo: make sure that null value doesn't throw exception
         if (task.getId() != null && taskDao.exists(task.getId())) {
             throw new TaskAlreadyExistsException();
         }
