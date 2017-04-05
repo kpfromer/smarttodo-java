@@ -9,7 +9,7 @@
         <li th:each="task : ${tasks}">
             <form method="post" th:action="@{/mark}" class="inline todo-item">
                 <input type="hidden" name="id" th:value="${task.id}"/>
-                <input type="checkbox" th:id="|checked_${task.id}|" th:checked="${task.complete}"/>
+                <input type="checkbox" th:id="|checked_${task.id}|" th:checked="${task.complete}" onclick="this.form.submit()"/>
                 <label th:for="|checked_${task.id}|" th:text="${task.description}"></label>
             </form>
         </li>

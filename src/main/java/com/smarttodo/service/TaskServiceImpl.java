@@ -2,6 +2,7 @@ package com.smarttodo.service;
 
 import com.smarttodo.dao.TaskDao;
 import com.smarttodo.model.Task;
+import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
@@ -23,7 +24,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task findById(Long id) {
+    public Task findById(Long id) throws TaskNotFoundException {
 
         Task task = taskDao.findOne(id);
 
@@ -36,14 +37,32 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void toggleComplete(Long id) {
+    public void toggleComplete(Long id) throws TaskNotFoundException {
         Task task = taskDao.findOne(id);
+
+        if(task == null){
+            throw new TaskNotFoundException();
+        }
+
         task.setComplete(!task.isComplete());
-        taskDao.save(task);
+        taskDao.updateForCurrentUser(task);
     }
 
     @Override
     public void save(Task task) {
-        taskDao.save(task);
+        //todo: make sure that null value doesn't throw exception
+        if (task.getId() != null && taskDao.exists(task.getId())) {
+            throw new TaskAlreadyExistsException();
+        }
+
+        taskDao.saveForCurrentUser(task);
+    }
+
+    @Override
+    public void update(Task task) {
+        if(!taskDao.exists(task.getId())){
+            throw new TaskNotFoundException();
+        }
+        taskDao.updateForCurrentUser(task);
     }
 }

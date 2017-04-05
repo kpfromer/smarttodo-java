@@ -10,4 +10,5 @@ public interface TaskService {
     Task findById(Long id);
     void toggleComplete(Long id);
     void save(Task task);
+    void update(Task task);
 }

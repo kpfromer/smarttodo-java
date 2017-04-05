@@ -11,6 +11,9 @@ import javax.persistence.*;
 @Entity
 public class Task {
 
+    //todo: add duedate
+    //todo: add valid functionality
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

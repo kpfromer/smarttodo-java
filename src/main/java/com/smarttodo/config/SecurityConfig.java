@@ -40,8 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService);
-        //todo: add password encryption
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
+
+    private PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
     }
 
 
@@ -54,8 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //todo: add correct user auth chain
-        //todo: add CSRF Protection
         http
                 .authorizeRequests()
                     .antMatchers("/test").permitAll()

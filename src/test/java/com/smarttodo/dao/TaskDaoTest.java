@@ -59,4 +59,16 @@ public class TaskDaoTest {
         dao.saveForCurrentUser(task);
         assertThat(dao.findOne(100L), notNullValue(Task.class));
     }
+
+    @Test
+    public void update_ShouldUpdateTask() throws Exception {
+        Task task = new Task.TaskBuilder()
+                .withDescription("COMPLETELY DIFFERENT DESCRIPTION")
+                .withComplete(false)
+                .withId(1L)
+                .build();
+        dao.updateForCurrentUser(task);
+        assertThat(dao.findOne(1L).getDescription(), equalTo(task.getDescription()));
+        assertThat(dao.findOne(1L).isComplete(), equalTo(task.isComplete()));
+    }
 }
