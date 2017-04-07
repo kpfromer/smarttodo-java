@@ -5,6 +5,7 @@
 <nav th:replace="layout :: nav"></nav>
 <div th:replace="layout :: flash"></div>
 <div class="container">
+    <!-- todo: add better todo layout: http://materializecss.com/badges.html#! -->
     <ul>
         <li th:each="task : ${tasks}">
             <form method="post" th:action="@{/mark}" class="inline todo-item">

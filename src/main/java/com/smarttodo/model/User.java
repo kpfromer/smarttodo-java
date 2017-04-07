@@ -4,6 +4,8 @@ import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Entity
 public class User implements UserDetails {
+
+    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(10);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +40,10 @@ public class User implements UserDetails {
     @JoinColumn(name = "role_id")//gets role id
     @OneToOne
     private Role role;
+
+    //todo: add email value
+
+    //todo: allow for password resets
 
 
     @Override
@@ -91,7 +99,7 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = PASSWORD_ENCODER.encode(password);
     }
 
     public void setEnabled(boolean enabled) {

@@ -1,5 +1,6 @@
 package com.smarttodo.config;
 
+import com.smarttodo.model.User;
 import com.smarttodo.service.UserService;
 import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +36,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //todo: add a role service
 
 
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private UserService userService;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
-    }
-
-    private PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
+        auth.userDetailsService(userService).passwordEncoder(User.PASSWORD_ENCODER);
     }
 
 
@@ -59,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/test").permitAll()
+//                    .antMatchers("/error/**").permitAll()
                     .anyRequest().hasRole("USER")
                 .and()
                     .formLogin()

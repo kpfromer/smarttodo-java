@@ -12,7 +12,8 @@ import javax.persistence.*;
 public class Task {
 
     //todo: add duedate
-    //todo: add valid functionality
+    //todo: UI Use chips for duedate in the text field: http://materializecss.com/chips.html
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

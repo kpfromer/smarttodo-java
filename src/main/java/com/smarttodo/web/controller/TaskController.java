@@ -2,23 +2,23 @@ package com.smarttodo.web.controller;
 
 import com.smarttodo.model.Task;
 import com.smarttodo.service.TaskService;
+import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
+import com.smarttodo.service.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by kpfromer on 3/25/17.
  */
 
-//todo: add @PreAuthorize("ROLE_USER") to methods that need it (since we will have methods that catch errors)
+
 @Controller
 public class TaskController {
-    //todo:create a test class
 
     @Autowired
     private TaskService taskService;
@@ -41,10 +41,21 @@ public class TaskController {
     
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
     public String addTask(@ModelAttribute Task task) {
-        //todo: add valid functionality
         taskService.save(task);
         return "redirect:/";
     }
-    //todo: catch errors
 
+    @ExceptionHandler(TaskNotFoundException.class)
+    public String notFound(Model model, Exception ex) {
+        model.addAttribute("ex",ex);
+        return "error";
+    }
+
+    @ExceptionHandler(TaskAlreadyExistsException.class)
+    public String alreadyExists(Model model, Exception ex) {
+        model.addAttribute("ex",ex);
+        return "error";
+    }
+
+    //todo: exception for Database errors
 }
