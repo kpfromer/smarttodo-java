@@ -24,6 +24,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import java.util.Map;
 
+import static com.smarttodo.model.User.PASSWORD_ENCODER;
+
 /**
  * Created by kpfromer on 3/24/17.
  */
@@ -32,17 +34,13 @@ import java.util.Map;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //todo: add a role dao
-    //todo: add a role service
-
-
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private UserService userService;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(User.PASSWORD_ENCODER);
+        auth.userDetailsService(userService).passwordEncoder(PASSWORD_ENCODER);
     }
 
 
@@ -58,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
 //                    .antMatchers("/error/**").permitAll()
+                        .antMatchers("/register").permitAll()
                     .anyRequest().hasRole("USER")
                 .and()
                     .formLogin()
@@ -71,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .logoutSuccessUrl("/login")//you can use a handler if you want
                 .and()
                     .csrf();//adds CSRF Protection for post requests
+
     }
 
     public AuthenticationSuccessHandler loginSuccessHandler(){

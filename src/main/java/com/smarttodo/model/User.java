@@ -1,13 +1,19 @@
 package com.smarttodo.model;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,10 +33,11 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(unique = true)
-    @Size(min = 8, max = 20)
+    @Size(min = 4, max = 20, message = "Username must be between 8 and 20 characters.")
     private String username;
 
     @Column(length = 100)
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters.")
     private String password;
 
     @Column(nullable = false)
@@ -41,10 +48,16 @@ public class User implements UserDetails {
     @OneToOne
     private Role role;
 
-    //todo: add email value
+    @Column(unique = true)
+    @Email(message = "Email is not a well-formed.")
+    @NotBlank(message = "Email can not be nothing.")
+    private String email;
 
     //todo: allow for password resets
 
+
+    public User() {
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -99,7 +112,7 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = PASSWORD_ENCODER.encode(password);
+        this.password = password;
     }
 
     public void setEnabled(boolean enabled) {
@@ -114,5 +127,12 @@ public class User implements UserDetails {
         this.role = role;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 }
