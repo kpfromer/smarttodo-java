@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -15,11 +16,11 @@ import javax.validation.constraints.Size;
 
 public class UserDto {
 
-    //todo: make sure username has no spaces
+    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Only letters, and numbers are allowed.")
     @Size(min = 4, max = 20, message = "Username must be between 8 and 20 characters.")
     private String username;
 
-    //todo: make sure password has no spaces
+    @Pattern(regexp = "^[a-zA-Z0-9\\-_!@#$%^&*()?]+$", message = "Only letters, numbers, and special characters are allowed.")
     @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters.")
     private String password;
     //todo: add password matching (http://www.baeldung.com/registration-with-spring-mvc-and-spring-security)
