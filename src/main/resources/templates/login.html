@@ -14,19 +14,34 @@
                     <div th:replace="layout :: flash"></div>
                     <form th:action="@{/login}" th:object="${user}" method="post" class="login">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
                         <div class="row">
+                            <div class="col s12">
+                                <h2>Login</h2>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+                        <br/>
+
+                        <div class="row input-field">
                             <div class="col s12">
                                 <input th:field="*{username}" placeholder="Username"/>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row input-field">
                             <div class="col s12">
                                 <input type="password" th:field="*{password}" placeholder="Password"/>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row input-field">
                             <div class="col s12">
                                 <button type="submit" class="btn">Login</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s12">
+                                <a th:href="@{/register}">Register</a>
                             </div>
                         </div>
                     </form>
