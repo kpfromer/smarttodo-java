@@ -1,9 +1,12 @@
 package com.smarttodo.web.controller;
 
+import com.smarttodo.dto.UserDto;
 import com.smarttodo.model.User;
 import com.smarttodo.service.RoleService;
 import com.smarttodo.service.UserService;
+import com.smarttodo.service.exceptions.EmailAlreadyExistsException;
 import com.smarttodo.service.exceptions.RoleNotFoundException;
+import com.smarttodo.service.exceptions.UsernameAlreadyExistsException;
 import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,23 +54,30 @@ public class LoginController {
         return "register";
     }
 
-    //todo: for test make sure password is encrypted!
+    //todo: add test
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public String createUser(@Valid User user, BindingResult bindingResult, RedirectAttributes redirectAttributes){
-        //todo: add validation
+    public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+
         //todo: add autologin
         if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("user", new User());
+            redirectAttributes.addFlashAttribute("user", new UserDto());
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
             return "register";
         }
 
-        if(userService.findByUsername(user.getUsername()) != null){
-            redirectAttributes.addAttribute("user", new User());
-            redirectAttributes.addFlashAttribute("flash", new FlashMessage("User already exists.", FlashMessage.Status.FAILURE));
+        //todo: add tests for exceptions
+        try {
+            userService.registerNewUserAccount(userDto);
+        } catch (UsernameAlreadyExistsException ex) {
+            redirectAttributes.addFlashAttribute("user", new UserDto());
+            redirectAttributes.addFlashAttribute("flash", new FlashMessage(ex.getMessage(), FlashMessage.Status.FAILURE));
+            return "redirect:/register";
+        } catch (EmailAlreadyExistsException ex) {
+            redirectAttributes.addFlashAttribute("user", new UserDto());
+            redirectAttributes.addFlashAttribute("flash", new FlashMessage(ex.getMessage(), FlashMessage.Status.FAILURE));
             return "redirect:/register";
         }
-        userService.save(user);
+
         return "redirect:/login";
     }
 
