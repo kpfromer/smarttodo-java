@@ -8,8 +8,6 @@ import com.smarttodo.service.exceptions.RoleNotFoundException;
  */
 public interface RoleService {
 
-    //todo: create test
-
     Role findByName(String name) throws RoleNotFoundException;
 
 }
