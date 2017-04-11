@@ -38,7 +38,7 @@ public class TaskController {
         return "redirect:/";
     }
 
-    
+    //todo: add validation
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
     public String addTask(@ModelAttribute Task task) {
         taskService.save(task);

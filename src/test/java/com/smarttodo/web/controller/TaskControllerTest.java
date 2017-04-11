@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
@@ -84,15 +85,14 @@ public class TaskControllerTest {
 
     @Test
     public void addTask_ShouldRedirectToIndexPage() throws Exception {
-        Task task = new Task.TaskBuilder()
-                .withId(1L)
-                .withDescription("Hello.")
-                .withComplete(true).build();
 
-        mockMvc.perform(
-                post("/tasks")
-                        .requestAttr("task", task)
-        ).andExpect(redirectedUrl("/"));
+        RequestBuilder request = post("/tasks")
+                .param("id", "1")
+                .param("description", "Hello. ")
+                .param("complete", "on");//note if I want the complete to be false the value parameter of the param method would be ""
+
+
+        mockMvc.perform(request).andExpect(redirectedUrl("/"));
         verify(service).save(any(Task.class));
     }
 
