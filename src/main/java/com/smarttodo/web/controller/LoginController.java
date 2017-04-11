@@ -28,8 +28,6 @@ import javax.validation.Valid;
 @Controller
 public class LoginController {
 
-    //todo: create test
-
     @Autowired
     private UserService userService;
 
@@ -64,7 +62,6 @@ public class LoginController {
             return "register";
         }
 
-        //todo: add tests for exceptions
         try {
             userService.registerNewUserAccount(userDto);
         } catch (UsernameAlreadyExistsException ex) {

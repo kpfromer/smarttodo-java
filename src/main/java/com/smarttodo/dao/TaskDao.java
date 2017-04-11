@@ -20,8 +20,6 @@ public interface TaskDao extends CrudRepository<Task, Long> {
     This all ways confused me, look at the link and securityExtension in SecurityConfig
     https://spring.io/blog/2014/07/15/spel-support-in-spring-data-jpa-query-definitions
     */
-    //todo: add a query annotation to stop code from allowing access to other user's data
-    //todo: add a test for this above
 
     @Query("select t from Task t where t.user.id=:#{principal.id}")
     List<Task> findAll();
