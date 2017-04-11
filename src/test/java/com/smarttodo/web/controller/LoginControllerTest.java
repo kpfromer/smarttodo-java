@@ -154,6 +154,8 @@ public class LoginControllerTest {
                 .andExpect(model().attribute("user", instanceOf(UserDto.class)))
                 .andExpect(model().attribute("org.springframework.validation.BindingResult.user", instanceOf(BindingResult.class)));
 
+        verify(service, never()).registerNewUserAccount(any(UserDto.class));
+
     }
     //todo: test for individual validation error checks
 }
