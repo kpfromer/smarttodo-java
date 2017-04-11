@@ -140,22 +140,39 @@ public class LoginControllerTest {
         verify(service).registerNewUserAccount(any(UserDto.class));
     }
 
+//    Validation Checks
+
     @Test
     public void createUser_ShouldIncludeNewUserDtoAndBindingResultInModelWhenValidationErrors() throws Exception {
-        RequestBuilder request = post("/register")
+        RequestBuilder requestInvalidUsername = post("/register")
                 .param("username", "@#$")
+                .param("password", "password12")
+                .param("email", "example@gmail.com")
+                .with(csrf());
+
+        RequestBuilder requestInvalidPassword = post("/register")
+                .param("username", "username")
                 .param("password", "][][][];';',.,.,.<>")
+                .param("email", "example@gmail.com")
+                .with(csrf());
+
+        RequestBuilder requestInvalidEmail = post("/register")
+                .param("username", "username")
+                .param("password", "password12")
                 .param("email", "dja;sfadsf")
                 .with(csrf());
 
-        mockMvc.perform(request)
-                .andExpect(view().name("register"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("user", instanceOf(UserDto.class)))
-                .andExpect(model().attribute("org.springframework.validation.BindingResult.user", instanceOf(BindingResult.class)));
+        RequestBuilder[] requests = {requestInvalidUsername, requestInvalidPassword, requestInvalidEmail};
 
-        verify(service, never()).registerNewUserAccount(any(UserDto.class));
+        for(RequestBuilder request : requests) {
+            mockMvc.perform(request)
+                    .andExpect(view().name("register"))
+                    .andExpect(status().isOk())
+                    .andExpect(model().attribute("user", instanceOf(UserDto.class)))
+                    .andExpect(model().attribute("org.springframework.validation.BindingResult.user", instanceOf(BindingResult.class)));
+            verify(service, never()).registerNewUserAccount(any(UserDto.class));
+        }
 
     }
-    //todo: test for individual validation error checks
+
 }
