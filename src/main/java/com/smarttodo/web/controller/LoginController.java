@@ -49,15 +49,14 @@ public class LoginController {
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
     public String registerForm(Model model){
-        User user = new User();
+        UserDto user = new UserDto();
         model.addAttribute("user", user);
         return "register";
     }
 
-    //todo: add test
+
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
-
         //todo: add autologin
         if(bindingResult.hasErrors()){
             redirectAttributes.addFlashAttribute("user", new UserDto());
