@@ -1,8 +1,10 @@
 package com.smarttodo.model;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by kpfro on 4/2/2017.
@@ -18,7 +20,12 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message = "Task description can not be null.")
+    @NotBlank(message = "Task description can not be nothing.")
     private String description;
+
+    @NotNull(message = "Task must either be completed or not.")
     private boolean complete;
 
     @ManyToOne

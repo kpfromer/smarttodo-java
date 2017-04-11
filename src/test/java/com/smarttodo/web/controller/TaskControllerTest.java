@@ -96,5 +96,27 @@ public class TaskControllerTest {
         verify(service).save(any(Task.class));
     }
 
-    //todo: add test to test if addTask with invalid data is handled
+    @Test
+    public void addTask_ShouldNotSaveTaskIfDescriptionIsBlank() throws Exception {
+        RequestBuilder request = post("/tasks")
+                .param("id", "1")
+                .param("description", "")//description is blank
+                .param("complete", "on");
+
+        mockMvc.perform(request);
+
+        verify(service, never()).save(any(Task.class));
+    }
+
+    @Test
+    public void addTask_ShouldNotSaveTaskIfDescriptionIsNull() throws Exception {
+        RequestBuilder request = post("/tasks")
+                .param("id", "1")//no description!
+                .param("complete", "on");
+
+        mockMvc.perform(request);
+
+        verify(service, never()).save(any(Task.class));
+    }
+
 }

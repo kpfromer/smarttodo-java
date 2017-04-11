@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * Created by kpfromer on 3/25/17.
@@ -38,9 +40,11 @@ public class TaskController {
         return "redirect:/";
     }
 
-    //todo: add validation
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
-    public String addTask(@ModelAttribute Task task) {
+    public String addTask(@Valid @ModelAttribute Task task, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return "redirect:/";
+        }
         taskService.save(task);
         return "redirect:/";
     }
