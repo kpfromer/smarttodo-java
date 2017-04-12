@@ -26,11 +26,11 @@ public interface TaskDao extends CrudRepository<Task, Long> {
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "insert into task (user_id, description, complete, id) values (:#{principal.id},:#{#task.description},:#{#task.complete},:#{#task.id})")
+    @Query(nativeQuery = true, value = "INSERT INTO task (user_id, description, complete, id) VALUES (:#{principal.id},:#{#task.description},:#{#task.complete},:#{#task.id})")
     void saveForCurrentUser(@Param("task") Task task);
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "update task set description=:#{#task.description}, complete=:#{#task.complete} where id=:#{#task.id}")
+    @Query(nativeQuery = true, value = "UPDATE task SET description=:#{#task.description}, complete=:#{#task.complete} WHERE id=:#{#task.id}")
     void updateForCurrentUser(@Param("task") Task task);
 }

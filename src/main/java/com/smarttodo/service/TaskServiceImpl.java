@@ -40,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
     public void toggleComplete(Long id) throws TaskNotFoundException {
         Task task = taskDao.findOne(id);
 
-        if(task == null){
+        if (task == null) {
             throw new TaskNotFoundException();
         }
 
@@ -59,7 +59,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void update(Task task) {
-        if(!taskDao.exists(task.getId())){
+        if (!taskDao.exists(task.getId())) {
             throw new TaskNotFoundException();
         }
         taskDao.updateForCurrentUser(task);

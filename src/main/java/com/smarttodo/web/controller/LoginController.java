@@ -9,6 +9,8 @@ import com.smarttodo.service.exceptions.RoleNotFoundException;
 import com.smarttodo.service.exceptions.UsernameAlreadyExistsException;
 import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,12 +43,13 @@ public class LoginController {
             model.addAttribute("flash", flash);
 
             request.getSession().removeAttribute("flash");
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
         return "login";
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
-    public String registerForm(Model model){
+    public String registerForm(Model model) {
         UserDto user = new UserDto();
         model.addAttribute("user", user);
         return "register";
@@ -54,9 +57,9 @@ public class LoginController {
 
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
-        //todo: add autologin
-        if(bindingResult.hasErrors()){
+    public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        //todo: add autologin(might have to add authService)
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", new UserDto());
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
             return "register";
@@ -78,7 +81,7 @@ public class LoginController {
     }
 
     @ExceptionHandler(RoleNotFoundException.class)
-    public String roleNotFound(Model model, Exception ex){
+    public String roleNotFound(Model model, Exception ex) {
         model.addAttribute("ex", ex);
         return "error";
     }

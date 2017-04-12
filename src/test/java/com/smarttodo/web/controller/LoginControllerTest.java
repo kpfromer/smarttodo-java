@@ -41,6 +41,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 /**
  * Created by kpfro on 4/8/2017.
  */
@@ -179,7 +180,7 @@ public class LoginControllerTest {
 
         RequestBuilder[] requests = {requestInvalidUsername, requestInvalidPassword, requestInvalidEmail, requestDifferentMatchingPassword};
 
-        for(RequestBuilder request : requests) {
+        for (RequestBuilder request : requests) {
             mockMvc.perform(request)
                     .andExpect(view().name("register"))
                     .andExpect(status().isOk())

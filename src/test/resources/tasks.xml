@@ -1,12 +1,13 @@
 <!--Mimics database entries-->
 <dataset>
-    <role id="1" name="ROLE_USER" />
+    <role id="1" name="ROLE_USER"/>
 
-    <user id="1" username="user1" password="password" enabled="true" role_id="1" email="exampleemail@example.com" />
+    <user id="1" username="user1" password="password" enabled="true" role_id="1" email="exampleemail@example.com"/>
     <!-- $2a$08$wgwoMKfYl5AUE9QtP4OjheNkkSDoqDmFGjjPE2XTPLDe9xso/hy7u is password -->
-    <user id="2" username="user2" password="$2a$08$wgwoMKfYl5AUE9QtP4OjheNkkSDoqDmFGjjPE2XTPLDe9xso" enabled="true" role_id="1" email="exampleemail2@example.com" />
+    <user id="2" username="user2" password="$2a$08$wgwoMKfYl5AUE9QtP4OjheNkkSDoqDmFGjjPE2XTPLDe9xso" enabled="true"
+          role_id="1" email="exampleemail2@example.com"/>
 
-    <task id="1" user_id="1" complete="TRUE" description="Data" />
-    <task id="2" user_id="1" complete="FALSE" description="JPA" />
-    <task id="3" user_id="2" complete="TRUE" description="Boot" />
+    <task id="1" user_id="1" complete="TRUE" description="Data"/>
+    <task id="2" user_id="1" complete="FALSE" description="JPA"/>
+    <task id="3" user_id="2" complete="TRUE" description="Boot"/>
 </dataset>

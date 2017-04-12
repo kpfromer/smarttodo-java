@@ -21,7 +21,7 @@ public class RoleServiceImpl implements RoleService {
 
         Role role = dao.findByName(name);
 
-        if(role == null){
+        if (role == null) {
             throw new RoleNotFoundException();
         }
 

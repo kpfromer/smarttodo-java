@@ -49,7 +49,7 @@ public class TaskServiceTest {
 
         verify(dao).findAll();
     }
-    
+
     @Test
     public void findById_ShouldReturnTask() throws Exception {
         when(dao.findOne(1L)).thenReturn(new Task());
@@ -90,7 +90,7 @@ public class TaskServiceTest {
         service.save(task);
         try {
             verify(dao).saveForCurrentUser(task);
-        } catch (MockitoAssertionError e){
+        } catch (MockitoAssertionError e) {
             throw new MockitoAssertionError("was expecting a call to dao.saveForCurrentUser with a null Id");
         }
     }

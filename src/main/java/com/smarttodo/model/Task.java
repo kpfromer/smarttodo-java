@@ -32,7 +32,8 @@ public class Task {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Task() {}
+    public Task() {
+    }
 
     public Long getId() {
         return id;

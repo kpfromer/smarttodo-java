@@ -25,15 +25,15 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    
+
     @RequestMapping({"/", "/todo"})
-    public String taskList(Model model){
+    public String taskList(Model model) {
         model.addAttribute("tasks", taskService.findAll());
         model.addAttribute("newTask", new Task());
         return "todo";
     }
 
-    
+
     @RequestMapping(path = "/mark", method = RequestMethod.POST)
     public String toggleComplete(@RequestParam Long id) {
         taskService.toggleComplete(id);
@@ -42,7 +42,7 @@ public class TaskController {
 
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
     public String addTask(@Valid @ModelAttribute Task task, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "redirect:/";
         }
         taskService.save(task);
@@ -51,13 +51,13 @@ public class TaskController {
 
     @ExceptionHandler(TaskNotFoundException.class)
     public String notFound(Model model, Exception ex) {
-        model.addAttribute("ex",ex);
+        model.addAttribute("ex", ex);
         return "error";
     }
 
     @ExceptionHandler(TaskAlreadyExistsException.class)
     public String alreadyExists(Model model, Exception ex) {
-        model.addAttribute("ex",ex);
+        model.addAttribute("ex", ex);
         return "error";
     }
 

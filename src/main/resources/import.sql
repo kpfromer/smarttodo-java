@@ -1,12 +1,14 @@
 -- Insert role
-insert into role (name) values ('ROLE_USER');
+INSERT INTO role (name) VALUES ('ROLE_USER');
 
 -- Insert two users (passwords are 'password')
-insert into user (username,enabled,password,role_id, email) values ('user',true,'$2a$08$wgwoMKfYl5AUE9QtP4OjheNkkSDoqDmFGjjPE2XTPLDe9xso/hy7u',1, 'ƒexampleemail@example.com');
-insert into user (username,enabled,password,role_id, email) values ('user2',true,'password',1, 'exampleemail2@example.com');
+INSERT INTO user (username, enabled, password, role_id, email)
+VALUES ('user', TRUE, '$2a$08$wgwoMKfYl5AUE9QtP4OjheNkkSDoqDmFGjjPE2XTPLDe9xso/hy7u', 1, 'ƒexampleemail@example.com');
+INSERT INTO user (username, enabled, password, role_id, email)
+VALUES ('user2', TRUE, 'password', 1, 'exampleemail2@example.com');
 
 -- Insert tasks
-insert into task (complete,description, user_id) values (true,'Code Task entity', 1);
-insert into task (complete,description, user_id) values (false,'Discuss users and roles', 1);
-insert into task (complete,description, user_id) values (false,'Enable Spring Security', 2);
-insert into task (complete,description, user_id) values (true,'Test application', 2);
+INSERT INTO task (complete, description, user_id) VALUES (TRUE, 'Code Task entity', 1);
+INSERT INTO task (complete, description, user_id) VALUES (FALSE, 'Discuss users and roles', 1);
+INSERT INTO task (complete, description, user_id) VALUES (FALSE, 'Enable Spring Security', 2);
+INSERT INTO task (complete, description, user_id) VALUES (TRUE, 'Test application', 2);

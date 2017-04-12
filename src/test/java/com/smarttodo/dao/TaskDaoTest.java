@@ -32,7 +32,7 @@ import static org.hamcrest.MatcherAssert.*;
         DbUnitTestExecutionListener.class
 })
 public class TaskDaoTest {
-    
+
     @Autowired
     private TaskDao dao;
 

@@ -50,30 +50,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
 //                    .antMatchers("/error/**").permitAll()
-                        .antMatchers("/register").permitAll()
-                    .anyRequest().hasRole("USER")
+                .antMatchers("/register").permitAll()
+                .anyRequest().hasRole("USER")
                 .and()
-                    .formLogin()
-                        .loginPage("/login")
-                        .permitAll()// allow anyone on this page
-                        .successHandler(loginSuccessHandler())
-                        .failureHandler(loginFailureHandler())
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()// allow anyone on this page
+                .successHandler(loginSuccessHandler())
+                .failureHandler(loginFailureHandler())
                 .and()//Logout : https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#jc-logout
-                    .logout()//logout url default is /logout; also the request type to logout must be a post request!
-                        .permitAll()// allow anyone on this page
-                        .logoutSuccessUrl("/login")//you can use a handler if you want
+                .logout()//logout url default is /logout; also the request type to logout must be a post request!
+                .permitAll()// allow anyone on this page
+                .logoutSuccessUrl("/login")//you can use a handler if you want
                 .and()
-                    .csrf();//adds CSRF Protection for post requests
+                .csrf();//adds CSRF Protection for post requests
 
     }
 
-    public AuthenticationSuccessHandler loginSuccessHandler(){
+    public AuthenticationSuccessHandler loginSuccessHandler() {
         /*
         * This current setup redirects the user to the home page
         * but if you wanted you can add curly brackets and have functionality to redirect to other places (maybe a project page)
@@ -83,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return (request, response, authentication) -> response.sendRedirect("/");
     }
 
-    public AuthenticationFailureHandler loginFailureHandler(){
+    public AuthenticationFailureHandler loginFailureHandler() {
         /*
         * Look at the layout.html and login.html for info about how the custom flash message works to display info
         * Look at the LoginController to see how to remove the flash message after being used
@@ -95,7 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public EvaluationContextExtension securityExtension(){
+    public EvaluationContextExtension securityExtension() {
         return new EvaluationContextExtensionSupport() {
             @Override
             public String getExtensionId() {
@@ -108,7 +107,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 * This will get the security expression root object, exposing all the details
                 * */
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                return new SecurityExpressionRoot(authentication) {};
+                return new SecurityExpressionRoot(authentication) {
+                };
             }
         };
     }

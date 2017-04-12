@@ -9,12 +9,6 @@ public class FlashMessage {
         this.status = status;
     }
 
-    public static enum Status {
-        SUCCESS,
-        INFO,
-        FAILURE
-    }
-
     public String getMessage() {
         return message;
     }
@@ -29,5 +23,11 @@ public class FlashMessage {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public static enum Status {
+        SUCCESS,
+        INFO,
+        FAILURE
     }
 }

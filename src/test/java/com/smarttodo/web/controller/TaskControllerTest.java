@@ -61,7 +61,7 @@ public class TaskControllerTest {
                 .andExpect(view().name("todo"))
                 .andExpect(model().attribute("tasks", tasks))
                 .andExpect(model().attribute("newTask", instanceOf(Task.class)));
-        
+
         verify(service).findAll();
     }
 
@@ -78,7 +78,7 @@ public class TaskControllerTest {
 
         mockMvc.perform(
                 post("/mark")
-                    .param("id", "1")
+                        .param("id", "1")
         ).andExpect(redirectedUrl("/"));
         verify(service).toggleComplete(1L);
     }

@@ -25,7 +25,6 @@ public class UserDto {
     @Pattern(regexp = "^[a-zA-Z0-9\\-_!@#$%^&*()?]+$", message = "Only letters, numbers, and special characters are allowed.")
     @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters.")
     private String password;
-    //todo: add password matching (http://www.baeldung.com/registration-with-spring-mvc-and-spring-security)
 
     private String matchingPassword;
 
