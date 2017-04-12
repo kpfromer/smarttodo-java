@@ -98,10 +98,12 @@ public class LoginControllerTest {
         RequestBuilder request = post("/register")
                 .param("username", "username12")
                 .param("password", "password12")
+                .param("matchingPassword", "password12")
                 .param("email", "example@gmail.com")
                 .with(csrf());
 
         doNothing().when(service).registerNewUserAccount(any(UserDto.class));
+        when(service.loadUserByUsername(anyString())).thenReturn(new User());
 
         mockMvc.perform(request).andExpect(redirectedUrl("/login"));
         verify(service).registerNewUserAccount(any(UserDto.class));
@@ -113,6 +115,7 @@ public class LoginControllerTest {
         RequestBuilder request = post("/register")
                 .param("username", "username12")
                 .param("password", "password12")
+                .param("matchingPassword", "password12")
                 .param("email", "example@gmail.com")
                 .with(csrf());
 
@@ -130,6 +133,7 @@ public class LoginControllerTest {
         RequestBuilder request = post("/register")
                 .param("username", "username12")
                 .param("password", "password12")
+                .param("matchingPassword", "password12")
                 .param("email", "example@gmail.com")
                 .with(csrf());
 
@@ -144,25 +148,36 @@ public class LoginControllerTest {
 
     @Test
     public void createUser_ShouldIncludeNewUserDtoAndBindingResultInModelWhenValidationErrors() throws Exception {
+        //todo: add matching Passwords
         RequestBuilder requestInvalidUsername = post("/register")
                 .param("username", "@#$")
                 .param("password", "password12")
+                .param("matchingPassword", "password12")
                 .param("email", "example@gmail.com")
                 .with(csrf());
 
         RequestBuilder requestInvalidPassword = post("/register")
                 .param("username", "username")
                 .param("password", "][][][];';',.,.,.<>")
+                .param("matchingPassword", "][][][];';',.,.,.<>")
                 .param("email", "example@gmail.com")
                 .with(csrf());
 
         RequestBuilder requestInvalidEmail = post("/register")
                 .param("username", "username")
                 .param("password", "password12")
+                .param("matchingPassword", "password12")
                 .param("email", "dja;sfadsf")
                 .with(csrf());
 
-        RequestBuilder[] requests = {requestInvalidUsername, requestInvalidPassword, requestInvalidEmail};
+        RequestBuilder requestDifferentMatchingPassword = post("/register")
+                .param("username", "username")
+                .param("password", "password12")
+                .param("matchingPassword", "passworaddD@DAD")
+                .param("email", "example@gmail.com")
+                .with(csrf());
+
+        RequestBuilder[] requests = {requestInvalidUsername, requestInvalidPassword, requestInvalidEmail, requestDifferentMatchingPassword};
 
         for(RequestBuilder request : requests) {
             mockMvc.perform(request)

@@ -1,5 +1,6 @@
 package com.smarttodo.dto;
 
+import com.smarttodo.dto.validation.PasswordMatches;
 import com.smarttodo.model.Role;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Size;
  * Created by kpfromer on 4/8/17.
  */
 
+@PasswordMatches(message = "Passwords must match.")
 public class UserDto {
 
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Only letters, and numbers are allowed.")
@@ -24,6 +26,8 @@ public class UserDto {
     @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters.")
     private String password;
     //todo: add password matching (http://www.baeldung.com/registration-with-spring-mvc-and-spring-security)
+
+    private String matchingPassword;
 
     @Email(message = "Email is not a well-formed.")
     @NotBlank(message = "Email can not be nothing.")
@@ -56,5 +60,11 @@ public class UserDto {
         this.email = email;
     }
 
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
 
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
+    }
 }

@@ -39,6 +39,13 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col s12 l8 input-field" th:classappend="${#fields.hasErrors('global')}? 'error' : ''">
+                                <input id="passwordMatching" type="password" th:field="*{matchingPassword}"/>
+                                <label for="passwordMatching">Confirm Password</label>
+                                <div class="error-message" th:if="${#fields.hasErrors('global')}" th:errors="*{global}"></div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col s12 l8 input-field" th:classappend="${#fields.hasErrors('email')}? 'error' : ''">
                                 <input id="email" type="email" th:field="*{email}"/>
                                 <label for="email">Email</label>
