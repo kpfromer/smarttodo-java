@@ -1,5 +1,6 @@
 package com.smarttodo.model;
 
+import com.smarttodo.core.BaseEntity;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
@@ -24,13 +25,9 @@ import java.util.List;
  */
 
 @Entity
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(10);
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(unique = true)
     @Size(min = 4, max = 20, message = "Username must be between 8 and 20 characters.")
@@ -109,14 +106,6 @@ public class User implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Role getRole() {

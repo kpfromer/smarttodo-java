@@ -1,5 +1,6 @@
 package com.smarttodo.model;
 
+import com.smarttodo.core.BaseEntity;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Component;
 
@@ -11,15 +12,11 @@ import javax.validation.constraints.NotNull;
  */
 
 @Entity
-public class Task {
+public class Task extends BaseEntity {
 
     //todo: add duedate
     //todo: UI Use chips for duedate in the text field: http://materializecss.com/chips.html
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @NotNull(message = "Task description can not be null.")
     @NotBlank(message = "Task description can not be nothing.")
@@ -33,14 +30,6 @@ public class Task {
     private User user;
 
     public Task() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getDescription() {
