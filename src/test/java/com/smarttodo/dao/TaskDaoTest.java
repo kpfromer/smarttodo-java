@@ -2,6 +2,7 @@ package com.smarttodo.dao;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
 import org.hamcrest.Matchers;
@@ -15,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+
+import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.*;
 //import static org.junit.Assert.*;
@@ -55,9 +58,31 @@ public class TaskDaoTest {
                 .withDescription("Spring Security")
                 .withComplete(true)
                 .withId(100L)
+                .withEvent(new Event())
                 .build();
         dao.saveForCurrentUser(task);
         assertThat(dao.findOne(100L), notNullValue(Task.class));
+    }
+
+    @Test
+    public void save_ShouldPersistTaskWithEvent() throws Exception {
+
+        Event event = new Event.EventBuilder()
+                .withRecurring(true)
+                .withCurrentSetDate(LocalDate.of(2017, 4, 19))
+                .withStartDate(LocalDate.of(2017, 4, 19))
+                .withEndDate(LocalDate.of(2017, 4, 26))
+                .build();
+
+        Task task = new Task.TaskBuilder()
+                .withDescription("Spring Data")
+                .withComplete(true)
+                .withEvent(event)
+                .withId(100L)
+                .build();
+
+        dao.saveForCurrentUser(task);
+        assertThat(dao.findOne(100L).getEvent(), notNullValue(Event.class));
     }
 
     @Test

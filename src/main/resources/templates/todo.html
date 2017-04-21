@@ -12,6 +12,7 @@
                 <input type="hidden" name="id" th:value="${task.id}"/>
                 <input type="checkbox" th:id="|checked_${task.id}|" th:checked="${task.complete}"
                        onclick="this.form.submit()"/>
+                <!-- todo: add click on label to update task -->
                 <label th:for="|checked_${task.id}|" th:text="${task.description}"></label>
             </form>
         </li>

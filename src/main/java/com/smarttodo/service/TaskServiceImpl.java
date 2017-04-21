@@ -1,12 +1,19 @@
 package com.smarttodo.service;
 
+import com.joestelmach.natty.DateGroup;
+import com.joestelmach.natty.Parser;
 import com.smarttodo.dao.TaskDao;
+import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
 import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by kpfro on 4/2/2017.
@@ -38,6 +45,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void toggleComplete(Long id) throws TaskNotFoundException {
+
+        //todo: add event functionality
+        //todo: add test
+
         Task task = taskDao.findOne(id);
 
         if (task == null) {
@@ -54,7 +65,73 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskAlreadyExistsException();
         }
 
+        task = parseStringForLocalDate(task);
+
+        if (task.getEvent() == null){
+            task.setEvent(new Event());
+        }
+
+
         taskDao.saveForCurrentUser(task);
+    }
+
+
+
+    private Task parseStringForLocalDate(Task task) {
+
+        //todo: add ability to stop dates from beginning used for duedate
+        //todo: natty doesn't allow for "everyday" and "every weekday" ADD IT!
+
+        if (task.getEvent() == null) {
+            Parser parser = new Parser();
+            List<DateGroup> groups = parser.parse(task.getDescription());
+            for (DateGroup group : groups) {
+
+                List<LocalDate> dates;
+
+                ZoneId timeZone = ZoneId.systemDefault();
+
+                dates = group.getDates().stream().map(date -> date.toInstant().atZone(timeZone).toLocalDate()).collect(Collectors.toList());
+
+                String matchingValue = group.getText();
+                String fullText = group.getFullText();
+
+                String editedText = fullText;
+
+                LocalDate duedate;
+                LocalDate recursUntil = null;
+
+                //todo: get user time zone (NOT SYSTEM TIME ZONE)
+
+                //todo: allow for choice of date to be used
+
+                duedate = dates.get(0);
+                if (group.isRecurring()) {
+
+                    if (group.getRecursUntil() != null) {
+                        recursUntil = group.getRecursUntil().toInstant().atZone(timeZone).toLocalDate();
+                    }
+
+                    editedText = editedText.replaceFirst("\\s?" + group.getParseLocations().get("recurrence").get(0).getText() + "\\s?", "");
+
+                }
+
+
+                editedText = editedText.replaceFirst("\\s?" + matchingValue + "\\s?", "");
+
+                Event event = new Event.EventBuilder()
+                        .withCurrentSetDate(duedate)
+                        .withStartDate((group.isRecurring()  ? duedate : null))
+                        .withEndDate(recursUntil)
+                        .withRecurring(group.isRecurring())
+                        .build();
+
+                task.setDescription(editedText);
+                task.setEvent(event);
+
+            }
+        }
+        return task;
     }
 
     @Override

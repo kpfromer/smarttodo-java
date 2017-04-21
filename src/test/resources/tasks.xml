@@ -7,7 +7,22 @@
     <user id="2" username="user2" password="$2a$08$wgwoMKfYl5AUE9QtP4OjheNkkSDoqDmFGjjPE2XTPLDe9xso" enabled="true"
           role_id="1" email="exampleemail2@example.com"/>
 
-    <task id="1" user_id="1" complete="TRUE" description="Data"/>
-    <task id="2" user_id="1" complete="FALSE" description="JPA"/>
-    <task id="3" user_id="2" complete="TRUE" description="Boot"/>
+
+    <!-- 2017-4-19 is third thursday in april 2017 -->
+    <task id="1" user_id="1" complete="TRUE" description="Data"
+          currentSetDate="2017-04-20" startDate="2017-04-20" recurring="true" completed="false"
+    />
+
+    <!-- 2018-7-4 is the first wednesday in july 2018 -->
+    <task id="2" user_id="1" complete="FALSE" description="JPA"
+          currentSetDate="2018-07-04" recurring="false" completed="true"
+    />
+
+    <!-- 2019-12-27 is the last friday in 2019
+    2020-1-10 is two fridays after 2019-12-27 -->
+    <task id="3" user_id="2" complete="TRUE" description="Boot"
+          currentSetDate="2019-12-27" startDate="2019-12-27" endDate="2020-01-10" recurring="true" completed="false"
+    />
+
+
 </dataset>
