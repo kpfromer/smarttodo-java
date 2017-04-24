@@ -22,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -46,8 +47,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by kpfro on 4/8/2017.
  */
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(locations="classpath:test.properties")
 public class LoginControllerTest {
+
+    @Autowired
+    private Environment env;
 
     private MockMvc mockMvc;
 
@@ -60,14 +65,11 @@ public class LoginControllerTest {
     @Before
     public void setUp() throws Exception {
 
-//        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-
+        MockitoAnnotations.initMocks(this);
 
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        //todo: get with property source
-        viewResolver.setPrefix("classpath:/templates/");
-        //todo: get with property source
-        viewResolver.setSuffix(".html");
+        viewResolver.setPrefix(env.getProperty("smarttodo.template.prefix"));
+        viewResolver.setSuffix(env.getProperty("smarttodo.template.suffix"));
         viewResolver.setOrder(1);
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
@@ -149,7 +151,6 @@ public class LoginControllerTest {
 
     @Test
     public void createUser_ShouldIncludeNewUserDtoAndBindingResultInModelWhenValidationErrors() throws Exception {
-        //todo: add matching Passwords
         RequestBuilder requestInvalidUsername = post("/register")
                 .param("username", "@#$")
                 .param("password", "password12")
