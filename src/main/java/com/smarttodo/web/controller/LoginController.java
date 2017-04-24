@@ -10,6 +10,7 @@ import com.smarttodo.service.exceptions.UsernameAlreadyExistsException;
 import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,7 +59,7 @@ public class LoginController {
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        //todo: add autologin(might have to add authService)
+
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", new UserDto());
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
@@ -76,6 +77,20 @@ public class LoginController {
             redirectAttributes.addFlashAttribute("flash", new FlashMessage(ex.getMessage(), FlashMessage.Status.FAILURE));
             return "redirect:/register";
         }
+
+        try {
+            User user = userService.findByUsername(userDto.getUsername());
+
+            Authentication auth =
+                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            redirectAttributes.addFlashAttribute("flash",
+                    new FlashMessage("Successfully Registered Account!", FlashMessage.Status.SUCCESS));
+
+            return "redirect:/";
+        } catch (Exception ignored) {}//todo: better exception handling
 
         return "redirect:/login";
     }
