@@ -3,6 +3,7 @@ package com.smarttodo.service;
 import com.smarttodo.dao.TaskDao;
 import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
+import com.smarttodo.service.exceptions.EventNullException;
 import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import org.assertj.core.util.Lists;
@@ -57,6 +58,17 @@ public class TaskServiceTest {
 
     @Test
     public void findById_ShouldReturnTask() throws Exception {
+        Task task = new Task.TaskBuilder()
+                .withEvent(new Event())
+                .build();
+
+        when(dao.findOne(1L)).thenReturn(task);
+        assertThat(service.findById(1L), instanceOf(Task.class));
+        verify(dao).findOne(1L);
+    }
+
+    @Test(expected = EventNullException.class)
+    public void findById_ShouldThrowEventNullException() throws Exception {
         when(dao.findOne(1L)).thenReturn(new Task());
         assertThat(service.findById(1L), instanceOf(Task.class));
         verify(dao).findOne(1L);
@@ -275,9 +287,21 @@ public class TaskServiceTest {
     @Test
     public void toggleComplete_ShouldToggleComplete() throws Exception {
         when(dao.findOne(1L)).thenReturn(new Task.TaskBuilder()
+                .withComplete(true)
+                .withEvent(new Event())
+                .build());
+        service.toggleComplete(1L);
+        assertEquals("toggleComplete should toggle the value of complete", false, dao.findOne(1L).isComplete());
+        verify(dao).updateForCurrentUser(any(Task.class));
+    }
+
+    //todo: add test about multiple day complete
+
+    @Test(expected = EventNullException.class)
+    public void toggleComplete_ShouldThrowEventNullException() throws Exception {
+        when(dao.findOne(1L)).thenReturn(new Task.TaskBuilder()
                 .withComplete(true).build());
         service.toggleComplete(1L);
-        assertEquals("toggleComplete should toggle the value of complete", false, service.findById(1L).isComplete());
         verify(dao).updateForCurrentUser(any(Task.class));
     }
 

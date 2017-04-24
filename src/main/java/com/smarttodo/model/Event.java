@@ -147,7 +147,7 @@ public class Event implements Comparable {
         return date;
     }
 
-    public void complete(){
+    protected void complete(){
 
         if (isRecurring()) {
 
@@ -157,6 +157,8 @@ public class Event implements Comparable {
             } else {
                 currentSetDate = nextOccurrence;
             }
+        } else {
+            setCompleted(true);
         }
     }
 }

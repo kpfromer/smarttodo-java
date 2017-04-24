@@ -71,6 +71,10 @@ public class Task extends BaseEntity {
         this.event = event;
     }
 
+    public void complete() {
+        event.complete();
+    }
+
     public static final class TaskBuilder {
         private Long id;
         private String description;

@@ -5,6 +5,7 @@ import com.joestelmach.natty.Parser;
 import com.smarttodo.dao.TaskDao;
 import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
+import com.smarttodo.service.exceptions.EventNullException;
 import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task findById(Long id) throws TaskNotFoundException {
+    public Task findById(Long id) throws TaskNotFoundException, EventNullException {
 
         Task task = taskDao.findOne(id);
 
         if (task == null) {
             throw new TaskNotFoundException();
+        }
+
+        //todo: add test
+        if(task.getEvent() == null){
+            throw new EventNullException();
         }
 
         return task;
@@ -44,18 +50,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void toggleComplete(Long id) throws TaskNotFoundException {
+    public void toggleComplete(Long id) {
 
-        //todo: add event functionality
-        //todo: add test
+        Task task = findById(id);
 
-        Task task = taskDao.findOne(id);
+        if(!task.isComplete()) {
+            task.complete();
 
-        if (task == null) {
-            throw new TaskNotFoundException();
+            if (task.getEvent().isCompleted()) {
+                task.setComplete(true);
+            }
+        } else {
+            task.setComplete(false);
         }
 
-        task.setComplete(!task.isComplete());
         taskDao.updateForCurrentUser(task);
     }
 
