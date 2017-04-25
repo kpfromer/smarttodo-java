@@ -19,6 +19,11 @@ public class Role extends BaseEntity {
     private String name;
 
     public Role() {
+        super();
+    }
+
+    public Role(Long id){
+        super(id);
     }
 
     public Role(String name) {

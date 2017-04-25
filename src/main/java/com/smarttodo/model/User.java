@@ -55,6 +55,11 @@ public class User extends BaseEntity implements UserDetails {
 
 
     public User() {
+        super();
+    }
+
+    public User(Long id){
+        super(id);
     }
 
     public User(String username, String password, boolean enabled, Role role, String email) {

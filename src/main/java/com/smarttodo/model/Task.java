@@ -37,6 +37,11 @@ public class Task extends BaseEntity {
     private Event event;
 
     public Task() {
+        super();
+    }
+
+    public Task(Long id){
+        super(id);
     }
 
     public Task(String description, boolean complete, User user, Event event) {
@@ -118,8 +123,7 @@ public class Task extends BaseEntity {
 
 
         public Task build() {
-            Task task = new Task();
-            task.setId(id);
+            Task task = new Task(id);
             task.setDescription(description);
             task.setComplete(complete);
             task.setEvent(event);

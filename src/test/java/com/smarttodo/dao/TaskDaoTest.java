@@ -42,8 +42,7 @@ public class TaskDaoTest {
 
     @Before
     public void setUp() throws Exception {
-        User user = new User();
-        user.setId(1L);
+        User user = new User(1L);
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(user, null));
     }
 
