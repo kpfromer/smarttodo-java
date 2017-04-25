@@ -56,10 +56,12 @@ public class User extends BaseEntity implements UserDetails {
 
     public User() {
         super();
+        this.enabled = false;
     }
 
     public User(Long id){
         super(id);
+        this.enabled = false;
     }
 
     public User(String username, String password, boolean enabled, Role role, String email) {
