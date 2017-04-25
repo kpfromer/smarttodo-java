@@ -41,6 +41,7 @@ public class User extends BaseEntity implements UserDetails {
     private boolean enabled;
 
     //One user has one role
+    //todo: allow for multiple roles
     @JoinColumn(name = "role_id")//gets role id
     @OneToOne
     private Role role;
@@ -54,6 +55,14 @@ public class User extends BaseEntity implements UserDetails {
 
 
     public User() {
+    }
+
+    public User(String username, String password, boolean enabled, Role role, String email) {
+        this.username = username;
+        this.password = password;
+        this.enabled = enabled;
+        this.role = role;
+        this.email = email;
     }
 
     @Override

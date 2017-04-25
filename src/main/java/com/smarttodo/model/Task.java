@@ -39,6 +39,13 @@ public class Task extends BaseEntity {
     public Task() {
     }
 
+    public Task(String description, boolean complete, User user, Event event) {
+        this.description = description;
+        this.complete = complete;
+        this.user = user;
+        this.event = event;
+    }
+
     public String getDescription() {
         return description;
     }
