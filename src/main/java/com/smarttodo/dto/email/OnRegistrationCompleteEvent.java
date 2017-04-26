@@ -2,7 +2,6 @@ package com.smarttodo.dto.email;
 
 import com.smarttodo.model.User;
 import org.springframework.context.ApplicationEvent;
-import org.springframework.context.event.EventListener;
 
 import java.util.Locale;
 
@@ -10,24 +9,15 @@ import java.util.Locale;
  * Created by kpfromer on 4/25/17.
  */
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
-    private String appUrl;
+
     private Locale locale;
     private User user;
 
-    public OnRegistrationCompleteEvent(User user, Locale locale, String appUrl) {
+    public OnRegistrationCompleteEvent(User user, Locale locale) {
         super(user);
 
         this.user = user;
         this.locale = locale;
-        this.appUrl = appUrl;
-    }
-
-    public String getAppUrl() {
-        return appUrl;
-    }
-
-    public void setAppUrl(String appUrl) {
-        this.appUrl = appUrl;
     }
 
     public Locale getLocale() {

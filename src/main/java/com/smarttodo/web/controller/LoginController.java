@@ -96,8 +96,7 @@ public class LoginController {
         }
 
         try {
-            String appUrl = request.getContextPath();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale()));
         } catch (Exception ex){
             redirectAttributes.addFlashAttribute("flash", new FlashMessage("Token Event Error!", FlashMessage.Status.FAILURE));
             return "redirect:/register";
