@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                    .antMatchers("/error/**").permitAll()
                     .antMatchers("/register").permitAll()
                     .antMatchers("/registrationConfirm").permitAll()
+                    .antMatchers("/resendRegistrationToken").permitAll()
                     .anyRequest().hasRole("USER")
                 .and()
                     .formLogin()

@@ -68,7 +68,7 @@ public class LoginController {
 
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, WebRequest request) {
+    public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", new UserDto());
@@ -107,15 +107,23 @@ public class LoginController {
 
     //todo: create test
     @RequestMapping(value = "/registrationConfirm", method = RequestMethod.GET)
-    public String confirmRegistration(@RequestParam("token") String token) {
+    public String confirmRegistration(@RequestParam("token") String token, Model model) {
 
         VerificationToken verificationToken = tokenService.getVerificationToken(token);
         Calendar cal = Calendar.getInstance();
 
         // Send to error page is token does not exist or is expired
-        if (verificationToken == null ||
-                ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0)) {
+        if (verificationToken == null) {
             //todo: give message
+            model.addAttribute("message", "Error! Token can not be null.");
+            return "badToken";
+        }
+
+        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            //todo: give message
+            model.addAttribute("message", "Error! Token has expired.");
+            model.addAttribute("expired", true);
+            model.addAttribute("token", token);
             return "badToken";
         }
 
@@ -123,6 +131,17 @@ public class LoginController {
 
         user.setEnabled(true);
         userService.updateRegisteredUser(user);
+        return "redirect:/login";
+    }
+
+    @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
+    public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken) {
+        VerificationToken newToken = tokenService.generateNewVerificationToken(existingToken);
+
+        User alreadyRegisteredUser = tokenService.getUser(newToken.getToken());
+
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(alreadyRegisteredUser, request.getLocale()));
+
         return "redirect:/login";
     }
 

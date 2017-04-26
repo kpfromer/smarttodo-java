@@ -24,11 +24,19 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void createVerificationToken(User user, String token) {
         VerificationToken myToken = new VerificationToken(token, user);
+        myToken.newExpiryDate();
         dao.save(myToken);
     }
 
     @Override
     public VerificationToken getVerificationToken(String VerificationToken) {
         return dao.findByToken(VerificationToken);
+    }
+
+    @Override
+    public VerificationToken generateNewVerificationToken(String existingToken) {
+        VerificationToken newVerificationToken = getVerificationToken(existingToken);
+        newVerificationToken.newExpiryDate();
+        return newVerificationToken;
     }
 }

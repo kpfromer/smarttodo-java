@@ -3,10 +3,7 @@ package com.smarttodo.model;
 import com.smarttodo.core.BaseEntity;
 import com.smarttodo.model.User;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,11 +23,13 @@ public class VerificationToken extends BaseEntity {
 
     private Date expiryDate;
 
+    //todo: property source
+    @Transient
+    private int timeFrame = 1440;//24 hours
+
     public VerificationToken(String token, User user) {
         this.token = token;
         this.user = user;
-        //todo: property source
-        this.expiryDate = calculateExpiryDate(60*24);
     }
 
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
@@ -40,6 +39,9 @@ public class VerificationToken extends BaseEntity {
         return new Date(cal.getTime().getTime());
     }
 
+    public void newExpiryDate(){
+        this.expiryDate = calculateExpiryDate(timeFrame);
+    }
 
     public VerificationToken() {
         super();

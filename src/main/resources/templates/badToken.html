@@ -7,7 +7,8 @@
 <div th:replace="layout :: flash"></div>
 <div class="container">
     <div class="error">
-        <p>Token was invalid!</p>
+        <h1 th:text="${message}">Token was invalid!</h1>
+        <a th:if="${expired == true and expired != null}" th:href="@{/resendRegistrationToken(token=${token})}">Resend Verification Link!</a>
     </div>
 </div>
 <div th:replace="layout :: scripts"></div>
