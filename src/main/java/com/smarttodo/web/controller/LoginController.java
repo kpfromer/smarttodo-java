@@ -97,7 +97,6 @@ public class LoginController {
 
         try {
             String appUrl = request.getContextPath();
-            //todo: create event/email on other thread, so user is not waiting for the page to load! http://www.baeldung.com/spring-async
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
         } catch (Exception ex){
             redirectAttributes.addFlashAttribute("flash", new FlashMessage("Token Event Error!", FlashMessage.Status.FAILURE));
