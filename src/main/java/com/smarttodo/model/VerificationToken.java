@@ -1,4 +1,4 @@
-package com.smarttodo.dto;
+package com.smarttodo.model;
 
 import com.smarttodo.core.BaseEntity;
 import com.smarttodo.model.User;
@@ -25,6 +25,13 @@ public class VerificationToken extends BaseEntity {
     private User user;
 
     private Date expiryDate;
+
+    public VerificationToken(String token, User user) {
+        this.token = token;
+        this.user = user;
+        //todo: property source
+        this.expiryDate = calculateExpiryDate(60*24);
+    }
 
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
