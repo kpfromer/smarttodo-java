@@ -3,8 +3,10 @@ package com.smarttodo.dto.email;
 import com.smarttodo.model.User;
 import com.smarttodo.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -17,6 +19,7 @@ import java.util.UUID;
  */
 //todo: create test
 @Component
+@PropertySource("application.properties")
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
     @Autowired
@@ -25,29 +28,34 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${smarttodo.mail.from}")
+    private String from;
+    @Value("${smarttodo.mail.subject}")
+    private String subject;
+    @Value("${smarttodo.mail.body}")
+    private String body;
+    @Value("${smarttodo.mail.url}")
+    private String url;
+
     @Override
     @Async
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
         this.confirmRegistration(event);
     }
 
-    //todo: add all the values to the application.properties file
     private void confirmRegistration(OnRegistrationCompleteEvent event) {
         User user = event.getUser();
         String token = UUID.randomUUID().toString();
         service.createVerificationToken(user, token);
 
-        String senderAddress = "test@gmail.com";
         String recipientAddress = user.getEmail();
-        String subject = "Registration Confirmation";
-        String confirmationUrl = event.getAppUrl() + "/registrationConfirm?token=" + token;
+        String confirmationUrl = url + "/registrationConfirm?token=" + token;
 
         SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom(senderAddress);
+        email.setFrom(from);
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        String message = "Please click on the following link to register account!";
-        email.setText(message + "\nhttp://localhost:8080" + confirmationUrl);
+        email.setText(String.format(body, confirmationUrl));
         mailSender.send(email);
     }
 }
