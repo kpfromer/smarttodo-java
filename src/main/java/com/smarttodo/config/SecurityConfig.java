@@ -55,18 +55,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
 //                    .antMatchers("/error/**").permitAll()
-                .antMatchers("/register").permitAll()
-                .anyRequest().hasRole("USER")
+                    .antMatchers("/register").permitAll()
+                    .antMatchers("/registrationConfirm").permitAll()
+                    .antMatchers("/resendRegistrationToken").permitAll()
+                    .anyRequest().hasRole("USER")
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()// allow anyone on this page
-                .successHandler(loginSuccessHandler())
-                .failureHandler(loginFailureHandler())
+                    .formLogin()
+                        .loginPage("/login")
+                            .permitAll()// allow anyone on this page
+                            .successHandler(loginSuccessHandler())
+                            .failureHandler(loginFailureHandler())
                 .and()//Logout : https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#jc-logout
-                .logout()//logout url default is /logout; also the request type to logout must be a post request!
-                .permitAll()// allow anyone on this page
-                .logoutSuccessUrl("/login")//you can use a handler if you want
+                    .logout()//logout url default is /logout; also the request type to logout must be a post request!
+                        .permitAll()// allow anyone on this page
+                        .logoutSuccessUrl("/login")//you can use a handler if you want
                 .and()
                 .csrf();//adds CSRF Protection for post requests
 

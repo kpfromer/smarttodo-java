@@ -24,5 +24,9 @@
           currentSetDate="2019-12-27" startDate="2019-12-27" endDate="2020-01-10" recurring="true" completed="false"
     />
 
+    <!--User for TokenDao (password is password)-->
+    <user id="3" username="tokenuser" password="$2a$08$wgwoMKfYl5AUE9QtP4OjheNkkSDoqDmFGjjPE2XTPLDe9xso" enabled="false" role_id="1" email="test@gmail.com" />
+    <!--todo: create token and expiryDate-->
+    <verificationtoken id="1" user_id="3" token="24c8e463-e786-408b-95e4-e36bd29d2439" expiryDate="2016-10-20" />
 
 </dataset>

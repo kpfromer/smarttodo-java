@@ -15,4 +15,7 @@ public interface UserService extends UserDetailsService {
     void save(User user);
 
     void registerNewUserAccount(UserDto userDto);
+
+    void updateRegisteredUser(User user);
+
 }

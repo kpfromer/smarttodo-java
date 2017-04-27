@@ -1,28 +1,31 @@
 package com.smarttodo.web.controller;
 
 import com.smarttodo.dto.UserDto;
+import com.smarttodo.dto.email.OnRegistrationCompleteEvent;
 import com.smarttodo.model.User;
+import com.smarttodo.model.VerificationToken;
 import com.smarttodo.service.RoleService;
+import com.smarttodo.service.TokenService;
 import com.smarttodo.service.UserService;
-import com.smarttodo.service.exceptions.EmailAlreadyExistsException;
-import com.smarttodo.service.exceptions.RoleNotFoundException;
-import com.smarttodo.service.exceptions.UsernameAlreadyExistsException;
+import com.smarttodo.service.exceptions.*;
 import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by kpfromer on 4/4/17.
@@ -34,6 +37,12 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    @Autowired
+    private TokenService tokenService;
+
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String loginForm(Model model, HttpServletRequest request) {
 
@@ -41,9 +50,12 @@ public class LoginController {
 
         try {
             Object flash = request.getSession().getAttribute("flash");
-            model.addAttribute("flash", flash);
+            if (flash != null) {
 
-            request.getSession().removeAttribute("flash");
+                model.addAttribute("flash", flash);
+
+                request.getSession().removeAttribute("flash");
+            }
         } catch (Exception ex) {
         }
         return "login";
@@ -58,7 +70,7 @@ public class LoginController {
 
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", new UserDto());
@@ -78,25 +90,77 @@ public class LoginController {
             return "redirect:/register";
         }
 
+        User registered = userService.findByUsername(userDto.getUsername());
+
+        if (registered == null) {
+            redirectAttributes.addFlashAttribute("flash", new FlashMessage("Register Error!", FlashMessage.Status.FAILURE));
+            return "redirect:/register";
+        }
+
         try {
-            User user = userService.findByUsername(userDto.getUsername());
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale()));
+        } catch (Exception ex){
+            redirectAttributes.addFlashAttribute("flash", new FlashMessage("Token Event Error!", FlashMessage.Status.FAILURE));
+            return "redirect:/register";
+        }
 
-            Authentication auth =
-                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        return "redirect:/login";
+    }
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
+    @RequestMapping(value = "/registrationConfirm", method = RequestMethod.GET)
+    public String confirmRegistration(@RequestParam("token") String token, Model model, RedirectAttributes redirectAttributes) {
 
-            redirectAttributes.addFlashAttribute("flash",
-                    new FlashMessage("Successfully Registered Account!", FlashMessage.Status.SUCCESS));
+        VerificationToken verificationToken;
 
-            return "redirect:/";
-        } catch (Exception ignored) {}//todo: better exception handling
+        try {
+            verificationToken = tokenService.getVerificationToken(token);
+        } catch (VerificationTokenNotFoundException ex){
+            // Send to error page is token does not exist or is expired
+            model.addAttribute("message", "Error! Token doesn't exist.");
+            return "badToken";
+        }
+
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            model.addAttribute("message", "Error! Token has expired.");
+            model.addAttribute("expired", true);
+            model.addAttribute("token", token);
+            return "badToken";
+        }
+
+        User user = verificationToken.getUser();
+
+        user.setEnabled(true);
+        userService.updateRegisteredUser(user);
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("You have successfully registered your account!", FlashMessage.Status.SUCCESS));
+        return "redirect:/login";
+    }
+
+    @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
+    public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken, Model model) {
+
+        VerificationToken newToken;
+        try {
+            newToken = tokenService.generateNewVerificationToken(existingToken);
+        } catch (VerificationTokenNotFoundException ex){
+            model.addAttribute("message", "Error! Token doesn't exist.");
+            return "badToken";
+        }
+
+        User alreadyRegisteredUser = newToken.getUser();
+
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(alreadyRegisteredUser, request.getLocale()));
 
         return "redirect:/login";
     }
 
     @ExceptionHandler(RoleNotFoundException.class)
     public String roleNotFound(Model model, Exception ex) {
+        model.addAttribute("ex", ex);
+        return "error";
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public String userNotFound(Model model, Exception ex){
         model.addAttribute("ex", ex);
         return "error";
     }

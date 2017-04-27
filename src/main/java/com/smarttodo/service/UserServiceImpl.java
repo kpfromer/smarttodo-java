@@ -3,9 +3,7 @@ package com.smarttodo.service;
 import com.smarttodo.dao.UserDao;
 import com.smarttodo.dto.UserDto;
 import com.smarttodo.model.User;
-import com.smarttodo.service.exceptions.EmailAlreadyExistsException;
-import com.smarttodo.service.exceptions.RoleNotFoundException;
-import com.smarttodo.service.exceptions.UsernameAlreadyExistsException;
+import com.smarttodo.service.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -60,6 +58,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerNewUserAccount(UserDto userDto) {
 
+        //todo: add null userDto protection
+        //todo: add test
+
         if (userExist(userDto.getUsername())) {
             throw new UsernameAlreadyExistsException("There is an account with that username: " + userDto.getUsername());
         }
@@ -72,9 +73,25 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDto.getUsername());
         user.setPassword(userDto.getPassword());
         user.setEmail(userDto.getEmail());
-        user.setEnabled(true);
+        user.setEnabled(false);
         user.setRole(roleService.findByName(env.getProperty("smarttodo.user.general")));
         userDao.save(user);
+    }
+
+    //todo: create test
+    @Override
+    public void updateRegisteredUser(User user) {
+
+        if (user == null) {
+            throw new NullUserException();
+        }
+
+        if(!userExist(user.getUsername())){
+            throw new UserNotFoundException();
+        }
+
+        userDao.save(user);
+
     }
 
     private boolean userExist(String username) {

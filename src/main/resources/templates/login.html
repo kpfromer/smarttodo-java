@@ -11,10 +11,8 @@
                     <img th:src="@{/assets/images/desktop-computer.svg}" alt="desktop computer" />
                 </div>-->
                 <div class="card-content">
-                    <div th:replace="layout :: flash"></div>
                     <form th:action="@{/login}" th:object="${user}" method="post" class="login">
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
                         <div class="row">
                             <div class="col s12">
                                 <h2>Login</h2>
@@ -23,7 +21,7 @@
 
                         <div class="divider"></div>
                         <br/>
-
+                        <div th:classappend="row" th:replace="layout :: flash"></div>
                         <div class="row input-field">
                             <div class="col s12">
                                 <input th:field="*{username}" placeholder="Username"/>
