@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -109,8 +110,8 @@ public class LoginController {
     @RequestMapping(value = "/registrationConfirm", method = RequestMethod.GET)
     public String confirmRegistration(@RequestParam("token") String token, Model model) {
 
+        //todo: catch VerificationTokenNotFoundException
         VerificationToken verificationToken = tokenService.getVerificationToken(token);
-        Calendar cal = Calendar.getInstance();
 
         // Send to error page is token does not exist or is expired
         if (verificationToken == null) {
@@ -119,7 +120,7 @@ public class LoginController {
             return "badToken";
         }
 
-        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+        if (verificationToken.getExpiryDate().isAfter(LocalDateTime.now())) {
             //todo: give message
             model.addAttribute("message", "Error! Token has expired.");
             model.addAttribute("expired", true);
@@ -134,6 +135,7 @@ public class LoginController {
         return "redirect:/login";
     }
 
+    //todo: create test
     @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
     public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken) {
         VerificationToken newToken = tokenService.generateNewVerificationToken(existingToken);
