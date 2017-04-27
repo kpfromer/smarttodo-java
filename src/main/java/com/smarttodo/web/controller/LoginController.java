@@ -7,9 +7,7 @@ import com.smarttodo.model.VerificationToken;
 import com.smarttodo.service.RoleService;
 import com.smarttodo.service.TokenService;
 import com.smarttodo.service.UserService;
-import com.smarttodo.service.exceptions.EmailAlreadyExistsException;
-import com.smarttodo.service.exceptions.RoleNotFoundException;
-import com.smarttodo.service.exceptions.UsernameAlreadyExistsException;
+import com.smarttodo.service.exceptions.*;
 import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -106,22 +104,20 @@ public class LoginController {
         return "redirect:/login";
     }
 
-    //todo: create test
     @RequestMapping(value = "/registrationConfirm", method = RequestMethod.GET)
     public String confirmRegistration(@RequestParam("token") String token, Model model) {
 
-        //todo: catch VerificationTokenNotFoundException
-        VerificationToken verificationToken = tokenService.getVerificationToken(token);
+        VerificationToken verificationToken;
 
-        // Send to error page is token does not exist or is expired
-        if (verificationToken == null) {
-            //todo: give message
-            model.addAttribute("message", "Error! Token can not be null.");
+        try {
+            verificationToken = tokenService.getVerificationToken(token);
+        } catch (VerificationTokenNotFoundException ex){
+            // Send to error page is token does not exist or is expired
+            model.addAttribute("message", "Error! Token doesn't exist.");
             return "badToken";
         }
 
-        if (verificationToken.getExpiryDate().isAfter(LocalDateTime.now())) {
-            //todo: give message
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             model.addAttribute("message", "Error! Token has expired.");
             model.addAttribute("expired", true);
             model.addAttribute("token", token);
@@ -135,12 +131,18 @@ public class LoginController {
         return "redirect:/login";
     }
 
-    //todo: create test
     @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
-    public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken) {
-        VerificationToken newToken = tokenService.generateNewVerificationToken(existingToken);
+    public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken, Model model) {
 
-        User alreadyRegisteredUser = tokenService.getUser(newToken.getToken());
+        VerificationToken newToken;
+        try {
+            newToken = tokenService.generateNewVerificationToken(existingToken);
+        } catch (VerificationTokenNotFoundException ex){
+            model.addAttribute("message", "Error! Token doesn't exist.");
+            return "badToken";
+        }
+
+        User alreadyRegisteredUser = newToken.getUser();
 
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(alreadyRegisteredUser, request.getLocale()));
 
@@ -149,6 +151,12 @@ public class LoginController {
 
     @ExceptionHandler(RoleNotFoundException.class)
     public String roleNotFound(Model model, Exception ex) {
+        model.addAttribute("ex", ex);
+        return "error";
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public String userNotFound(Model model, Exception ex){
         model.addAttribute("ex", ex);
         return "error";
     }
