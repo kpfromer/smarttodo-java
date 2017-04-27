@@ -50,9 +50,12 @@ public class LoginController {
 
         try {
             Object flash = request.getSession().getAttribute("flash");
-            model.addAttribute("flash", flash);
+            if (flash != null) {
 
-            request.getSession().removeAttribute("flash");
+                model.addAttribute("flash", flash);
+
+                request.getSession().removeAttribute("flash");
+            }
         } catch (Exception ex) {
         }
         return "login";
@@ -105,7 +108,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/registrationConfirm", method = RequestMethod.GET)
-    public String confirmRegistration(@RequestParam("token") String token, Model model) {
+    public String confirmRegistration(@RequestParam("token") String token, Model model, RedirectAttributes redirectAttributes) {
 
         VerificationToken verificationToken;
 
@@ -128,6 +131,7 @@ public class LoginController {
 
         user.setEnabled(true);
         userService.updateRegisteredUser(user);
+        redirectAttributes.addFlashAttribute("flash", new FlashMessage("You have successfully registered your account!", FlashMessage.Status.SUCCESS));
         return "redirect:/login";
     }
 
