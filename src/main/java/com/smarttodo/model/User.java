@@ -140,4 +140,60 @@ public class User extends BaseEntity implements UserDetails {
         this.email = email;
     }
 
+
+    public static final class UserBuilder {
+        private Long id;
+        private String username;
+        private String password;
+        private boolean enabled;
+        private Role role;
+        private String email;
+
+        public UserBuilder() {
+        }
+
+        public static UserBuilder anUser() {
+            return new UserBuilder();
+        }
+
+        public UserBuilder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public UserBuilder withUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserBuilder withEnabled(boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
+
+        public UserBuilder withRole(Role role) {
+            this.role = role;
+            return this;
+        }
+
+        public UserBuilder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public User build() {
+            User user = new User(id);
+            user.setUsername(username);
+            user.setPassword(password);
+            user.setEnabled(enabled);
+            user.setRole(role);
+            user.setEmail(email);
+            return user;
+        }
+    }
 }
