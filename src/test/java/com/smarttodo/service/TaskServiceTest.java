@@ -256,8 +256,6 @@ public class TaskServiceTest {
         verify(dao).updateForCurrentUser(task);
     }
 
-    //todo: test event update
-
     @Test(expected = TaskNotFoundException.class)
     public void update_ShouldThrowTaskNotFoundException() throws Exception {
         Task task = new Task.TaskBuilder()
