@@ -40,7 +40,6 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskNotFoundException();
         }
 
-        //todo: add test
         if(task.getEvent() == null){
             throw new EventNullException();
         }
