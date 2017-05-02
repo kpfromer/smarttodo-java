@@ -36,7 +36,7 @@ public class DatabaseLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        roleDao.save(new Role("ROLE_USER"));
+        roleDao.save(new Role(1L, "ROLE_USER"));
 
         Role role = roleDao.findByName("ROLE_USER");
 

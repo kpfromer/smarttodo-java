@@ -30,6 +30,11 @@ public class Role extends BaseEntity {
         this.name = name;
     }
 
+    public Role(Long id, String name) {
+        super(id);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
