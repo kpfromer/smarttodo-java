@@ -24,7 +24,7 @@ import java.util.List;
  * Created by kpfro on 4/2/2017.
  */
 
-@Entity
+@Entity(name = "SmarttodoUser")
 public class User extends BaseEntity implements UserDetails {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(10);
