@@ -64,14 +64,6 @@ public class User extends BaseEntity implements UserDetails {
         this.enabled = false;
     }
 
-    public User(String username, String password, boolean enabled, Role role, String email) {
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.role = role;
-        this.email = email;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
