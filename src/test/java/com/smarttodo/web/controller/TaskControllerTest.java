@@ -1,9 +1,10 @@
 package com.smarttodo.web.controller;
 
 import com.smarttodo.model.Task;
+import com.smarttodo.model.User;
 import com.smarttodo.service.TaskService;
-import org.apache.poi.ss.formula.functions.T;
-import org.hamcrest.Matchers;
+import com.smarttodo.service.UserService;
+import com.smarttodo.service.exceptions.UserNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,19 +12,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
 
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 //builds requests, acts like a fake user/headless browser
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 //used to get results
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,9 +48,23 @@ public class TaskControllerTest {
     @Mock
     private TaskService service;
 
+    @Mock
+    private UserService userService;
+
+    private UsernamePasswordAuthenticationToken principal;
+
     @Before
     public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        User user = new User.UserBuilder()
+                .withId(1L)
+                .withUsername("kylepfromer")
+                .withPassword("example")
+                .withEmail("example@gmail.com")
+                .withEnabled(true)
+                .build();
+         principal = new UsernamePasswordAuthenticationToken(user, null);
     }
 
     @Test
@@ -89,11 +108,12 @@ public class TaskControllerTest {
         RequestBuilder request = post("/tasks")
                 .param("id", "1")
                 .param("description", "Hello. ")
+                .principal(principal)
                 .param("complete", "on");//note if I want the complete to be false the value parameter of the param method would be ""
 
 
         mockMvc.perform(request).andExpect(redirectedUrl("/"));
-        verify(service).save(any(Task.class));
+        verify(service).saveOrUpdate(any(Task.class));
     }
 
     @Test
@@ -101,22 +121,39 @@ public class TaskControllerTest {
         RequestBuilder request = post("/tasks")
                 .param("id", "1")
                 .param("description", "")//description is blank
+                .principal(principal)
                 .param("complete", "on");
 
         mockMvc.perform(request);
 
-        verify(service, never()).save(any(Task.class));
+        verify(service, never()).saveOrUpdate(any(Task.class));
     }
 
     @Test
     public void addTask_ShouldNotSaveTaskIfDescriptionIsNull() throws Exception {
         RequestBuilder request = post("/tasks")
                 .param("id", "1")//no description!
+                .principal(principal)
                 .param("complete", "on");
 
         mockMvc.perform(request);
 
-        verify(service, never()).save(any(Task.class));
+        verify(service, never()).saveOrUpdate(any(Task.class));
+    }
+
+    @Test
+    public void addTask_ShouldNotSaveTaskIfUserDoesNotExist() throws Exception {
+
+        RequestBuilder request = post("/tasks")
+                .param("id", "1")
+                .param("description", "Hello world")
+                .param("complete", "on")
+                .principal(principal);
+
+        when(userService.findByUsername(anyString())).thenThrow(new UserNotFoundException());
+        mockMvc.perform(request).andExpect(redirectedUrl("/login"));
+        verify(service, never()).saveOrUpdate(any(Task.class));
+
     }
 
 }
