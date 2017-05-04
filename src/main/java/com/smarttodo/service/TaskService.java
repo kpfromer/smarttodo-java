@@ -16,7 +16,5 @@ public interface TaskService {
 
     void toggleComplete(Long id) throws TaskNotFoundException, EventNullException;
 
-    void save(Task task) throws TaskAlreadyExistsException;
-
-    void update(Task task) throws TaskNotFoundException;
+    void saveOrUpdate(Task task);
 }

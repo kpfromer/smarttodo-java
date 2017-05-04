@@ -3,9 +3,11 @@ package com.smarttodo.service;
 import com.smarttodo.dao.TaskDao;
 import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
+import com.smarttodo.model.User;
 import com.smarttodo.service.exceptions.EventNullException;
 import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
+import com.smarttodo.service.exceptions.UserNotFoundException;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +27,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-//builds requests, acts like a fake user/headless browser
-//used to get results
 
 
 /**
@@ -87,11 +87,12 @@ public class TaskServiceTest {
                 .withId(1L)
                 .withComplete(true)
                 .withDescription("Hello World")
+                .withUser(new User(1L))
                 .build();
 
-        service.save(task);
+        service.saveOrUpdate(task);
         try {
-            verify(dao).saveForCurrentUser(task);
+            verify(dao).save(task);
         } catch (MockitoAssertionError e) {
             throw new MockitoAssertionError("was expecting a call to dao.saveForCurrentUser with a valid Task object");
         }
@@ -103,13 +104,14 @@ public class TaskServiceTest {
                 .withId(1L)
                 .withComplete(false)
                 .withDescription("Hello World next tue")
+                .withUser(new User(1L))
                 .build();
 
-        service.save(task);
+        service.saveOrUpdate(task);
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(dao).saveForCurrentUser(captor.capture());
+        verify(dao).save(captor.capture());
 
         Event serviceEvent = captor.getValue().getEvent();
 
@@ -124,13 +126,14 @@ public class TaskServiceTest {
                 .withId(1L)
                 .withComplete(false)
                 .withDescription("Hello World every monday")
+                .withUser(new User(1L))
                 .build();
 
-        service.save(task);
+        service.saveOrUpdate(task);
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(dao).saveForCurrentUser(captor.capture());
+        verify(dao).save(captor.capture());
 
         Event serviceEvent = captor.getValue().getEvent();
 
@@ -149,13 +152,14 @@ public class TaskServiceTest {
                 .withId(1L)
                 .withComplete(false)
                 .withDescription("Hello World every monday until 12/6/2500")
+                .withUser(new User(1L))
                 .build();
 
-        service.save(task);
+        service.saveOrUpdate(task);
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(dao).saveForCurrentUser(captor.capture());
+        verify(dao).save(captor.capture());
 
         Event serviceEvent = captor.getValue().getEvent();
 
@@ -173,14 +177,15 @@ public class TaskServiceTest {
         Task task = new Task.TaskBuilder()
                 .withId(1L)
                 .withComplete(false)
+                .withUser(new User(1L))
                 .withDescription("Hello World next sunday")
                 .build();
 
-        service.save(task);
+        service.saveOrUpdate(task);
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(dao).saveForCurrentUser(captor.capture());
+        verify(dao).save(captor.capture());
 
         Event serviceEvent = captor.getValue().getEvent();
 
@@ -199,15 +204,16 @@ public class TaskServiceTest {
         Task task = new Task.TaskBuilder()
                 .withId(1L)
                 .withComplete(false)
+                .withUser(new User(1L))
                 .withDescription("Hello World")
                 .withEvent(null)
                 .build();
 
-        service.save(task);
+        service.saveOrUpdate(task);
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(dao).saveForCurrentUser(captor.capture());
+        verify(dao).save(captor.capture());
 
         Event serviceEvent = captor.getValue().getEvent();
 
@@ -220,66 +226,26 @@ public class TaskServiceTest {
         Task task = new Task.TaskBuilder()
                 .withComplete(true)
                 .withDescription("Hello World")
+                .withUser(new User(1L))
                 .build();
-        when(dao.exists(null)).thenThrow(new IllegalArgumentException("Id can't be null"));
-        service.save(task);
+
+        service.saveOrUpdate(task);
         try {
-            verify(dao).saveForCurrentUser(task);
+            verify(dao).save(task);
         } catch (MockitoAssertionError e) {
             throw new MockitoAssertionError("was expecting a call to dao.saveForCurrentUser with a null Id");
         }
     }
 
-    @Test(expected = TaskAlreadyExistsException.class)
-    public void save_ShouldThrowTaskAlreadyExistsException() throws Exception {
+    @Test(expected = UserNotFoundException.class)
+    public void save_ShouldThrowUserNotFoundException() throws Exception {
         Task task = new Task.TaskBuilder()
-                .withId(1L)
-                .withComplete(true)
-                .withDescription("Hello World")
-                .build();
-        when(dao.exists(1L)).thenReturn(true);
-        service.save(task);
-        verify(dao).exists(1L);
-    }
-
-    @Test
-    public void update_ShouldUpdateTask() throws Exception {
-        Task task = new Task.TaskBuilder()
-                .withId(1L)
                 .withComplete(true)
                 .withDescription("Hello World")
                 .build();
 
-        when(dao.exists(1L)).thenReturn(true);
-        service.update(task);
-        verify(dao).exists(1L);
-        verify(dao).updateForCurrentUser(task);
-    }
-
-    @Test(expected = TaskNotFoundException.class)
-    public void update_ShouldThrowTaskNotFoundException() throws Exception {
-        Task task = new Task.TaskBuilder()
-                .withId(1L)
-                .withComplete(true)
-                .withDescription("Hello World")
-                .build();
-
-        when(dao.exists(1L)).thenReturn(false);
-        service.update(task);
-        verify(dao).exists(1L);
-    }
-
-    @Test(expected = TaskNotFoundException.class)
-    public void updateShouldThrowTaskNotFoundExceptionWithNullId() throws Exception {
-        Task task = new Task.TaskBuilder()
-                .withId(null)
-                .withComplete(true)
-                .withDescription("Hello World")
-                .build();
-
-        when(dao.exists(1L)).thenReturn(false);
-        service.update(task);
-        verify(dao).exists(1L);
+        service.saveOrUpdate(task);
+        verify(dao, never()).save(any(Task.class));
     }
 
     @Test
@@ -287,10 +253,11 @@ public class TaskServiceTest {
         when(dao.findOne(1L)).thenReturn(new Task.TaskBuilder()
                 .withComplete(true)
                 .withEvent(new Event())
+                .withUser(new User(1L))
                 .build());
         service.toggleComplete(1L);
         assertEquals("toggleComplete should toggle the value of complete", false, dao.findOne(1L).isComplete());
-        verify(dao).updateForCurrentUser(any(Task.class));
+        verify(dao).save(any(Task.class));
     }
 
     //todo: add test about multiple day complete
@@ -300,7 +267,7 @@ public class TaskServiceTest {
         when(dao.findOne(1L)).thenReturn(new Task.TaskBuilder()
                 .withComplete(true).build());
         service.toggleComplete(1L);
-        verify(dao).updateForCurrentUser(any(Task.class));
+        verify(dao).save(any(Task.class));
     }
 
     @Test(expected = TaskNotFoundException.class)

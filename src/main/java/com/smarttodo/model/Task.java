@@ -1,8 +1,8 @@
 package com.smarttodo.model;
 
 import com.smarttodo.core.BaseEntity;
+import com.smarttodo.service.exceptions.UserNotFoundException;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -42,13 +42,6 @@ public class Task extends BaseEntity {
 
     public Task(Long id){
         super(id);
-    }
-
-    public Task(String description, boolean complete, User user, Event event) {
-        this.description = description;
-        this.complete = complete;
-        this.user = user;
-        this.event = event;
     }
 
     public String getDescription() {
@@ -121,12 +114,17 @@ public class Task extends BaseEntity {
             return this;
         }
 
+        public TaskBuilder withUser(User user) {
+            this.user = user;
+            return this;
+        }
 
         public Task build() {
             Task task = new Task(id);
             task.setDescription(description);
             task.setComplete(complete);
             task.setEvent(event);
+            task.setUser(user);
             return task;
         }
     }

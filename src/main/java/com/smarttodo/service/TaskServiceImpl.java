@@ -3,12 +3,15 @@ package com.smarttodo.service;
 import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 import com.smarttodo.dao.TaskDao;
+import com.smarttodo.dao.UserDao;
 import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
+import com.smarttodo.model.User;
 import com.smarttodo.service.exceptions.EventNullException;
-import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
+import com.smarttodo.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -63,26 +66,28 @@ public class TaskServiceImpl implements TaskService {
             task.setComplete(false);
         }
 
-        taskDao.updateForCurrentUser(task);
+        this.saveOrUpdate(task);
     }
 
+    //todo: add throws
     @Override
-    public void save(Task task) {
-        if (task.getId() != null && taskDao.exists(task.getId())) {
-            throw new TaskAlreadyExistsException();
-        }
+    public void saveOrUpdate(Task task) {
 
         task = parseStringForLocalDate(task);
 
+        //todo: add event null exception
+        //todo: move to task
         if (task.getEvent() == null){
             task.setEvent(new Event());
         }
 
-
-        taskDao.saveForCurrentUser(task);
+        //todo: add test for controller
+        if (task.getUser() == null){
+            throw new UserNotFoundException();
+        }
+        
+        taskDao.save(task);
     }
-
-
 
     private Task parseStringForLocalDate(Task task) {
 
@@ -139,13 +144,5 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         return task;
-    }
-
-    @Override
-    public void update(Task task) {
-        if (!taskDao.exists(task.getId())) {
-            throw new TaskNotFoundException();
-        }
-        taskDao.updateForCurrentUser(task);
     }
 }

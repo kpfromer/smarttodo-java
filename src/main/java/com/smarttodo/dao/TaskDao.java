@@ -23,14 +23,4 @@ public interface TaskDao extends CrudRepository<Task, Long> {
 
     @Query("select t from Task t where t.user.id=:#{principal.id}")
     List<Task> findAll();
-
-    @Modifying
-    @Transactional
-    @Query(nativeQuery = true, value = "INSERT INTO task (user_id, description, complete, id, completed, currentSetDate, startDate, endDate, recurring) VALUES (:#{principal.id},:#{#task.description},:#{#task.complete},:#{#task.id}, :#{#task.event.completed}, :#{#task.event.currentSetDate}, :#{#task.event.startDate}, :#{#task.event.endDate}, :#{#task.event.recurring})")
-    void saveForCurrentUser(@Param("task") Task task);
-
-    @Modifying
-    @Transactional
-    @Query(nativeQuery = true, value = "UPDATE task SET description=:#{#task.description}, complete=:#{#task.complete} WHERE id=:#{#task.id}")
-    void updateForCurrentUser(@Param("task") Task task);
 }

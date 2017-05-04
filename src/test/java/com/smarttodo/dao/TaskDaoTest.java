@@ -52,49 +52,4 @@ public class TaskDaoTest {
     public void findAll_ShouldReturnTwo() throws Exception {
         assertThat(dao.findAll(), hasSize(2));
     }
-
-    @Test
-    public void save_ShouldPersistTask() throws Exception {
-        Task task = new Task.TaskBuilder()
-                .withDescription("Spring Security")
-                .withComplete(true)
-                .withId(100L)
-                .withEvent(new Event())
-                .build();
-        dao.saveForCurrentUser(task);
-        assertThat(dao.findOne(100L), notNullValue(Task.class));
-    }
-
-    @Test
-    public void save_ShouldPersistTaskWithEvent() throws Exception {
-
-        Event event = new Event.EventBuilder()
-                .withRecurring(true)
-                .withCurrentSetDate(LocalDate.of(2017, 4, 19))
-                .withStartDate(LocalDate.of(2017, 4, 19))
-                .withEndDate(LocalDate.of(2017, 4, 26))
-                .build();
-
-        Task task = new Task.TaskBuilder()
-                .withDescription("Spring Data")
-                .withComplete(true)
-                .withEvent(event)
-                .withId(100L)
-                .build();
-
-        dao.saveForCurrentUser(task);
-        assertThat(dao.findOne(100L).getEvent(), notNullValue(Event.class));
-    }
-
-    @Test
-    public void update_ShouldUpdateTask() throws Exception {
-        Task task = new Task.TaskBuilder()
-                .withDescription("COMPLETELY DIFFERENT DESCRIPTION")
-                .withComplete(false)
-                .withId(1L)
-                .build();
-        dao.updateForCurrentUser(task);
-        assertThat(dao.findOne(1L).getDescription(), equalTo(task.getDescription()));
-        assertThat(dao.findOne(1L).isComplete(), equalTo(task.isComplete()));
-    }
 }
