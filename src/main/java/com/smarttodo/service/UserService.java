@@ -14,8 +14,6 @@ public interface UserService extends UserDetailsService {
     //todo: add throws
     User findByUsername(String username) throws UserNotFoundException;
 
-    void save(User user);
-
     void registerNewUserAccount(UserDto userDto);
 
     void updateRegisteredUser(User user);

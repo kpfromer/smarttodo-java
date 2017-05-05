@@ -53,15 +53,6 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    //todo: remove this and from interface
-    @Override
-    public void save(User user) throws RoleNotFoundException {
-        user.setRole(roleService.findByName(env.getProperty("smarttodo.user.general")));
-        user.setEnabled(true);
-        user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
-        userDao.save(user);
-    }
-
     @Override
     public void registerNewUserAccount(UserDto userDto) {
 
