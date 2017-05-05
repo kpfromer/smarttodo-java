@@ -66,4 +66,48 @@ public class UserDto {
     public void setMatchingPassword(String matchingPassword) {
         this.matchingPassword = matchingPassword;
     }
+
+
+    public static final class UserDtoBuilder {
+        private String username;
+        private String password;
+        private String matchingPassword;
+        private String email;
+
+        public UserDtoBuilder() {
+        }
+
+        public static UserDtoBuilder anUserDto() {
+            return new UserDtoBuilder();
+        }
+
+        public UserDtoBuilder withUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserDtoBuilder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserDtoBuilder withMatchingPassword(String matchingPassword) {
+            this.matchingPassword = matchingPassword;
+            return this;
+        }
+
+        public UserDtoBuilder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserDto build() {
+            UserDto userDto = new UserDto();
+            userDto.setUsername(username);
+            userDto.setPassword(password);
+            userDto.setMatchingPassword(matchingPassword);
+            userDto.setEmail(email);
+            return userDto;
+        }
+    }
 }

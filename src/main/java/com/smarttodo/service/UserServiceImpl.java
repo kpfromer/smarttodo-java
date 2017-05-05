@@ -31,7 +31,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userDao.findByUsername(username);
+        User user = userDao.findByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        return user;
     }
 
 
@@ -47,6 +53,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    //todo: remove this and from interface
     @Override
     public void save(User user) throws RoleNotFoundException {
         user.setRole(roleService.findByName(env.getProperty("smarttodo.user.general")));
@@ -59,7 +66,7 @@ public class UserServiceImpl implements UserService {
     public void registerNewUserAccount(UserDto userDto) {
 
         //todo: add null userDto protection
-        //todo: add test
+        //todo: add test for above
 
         if (userExist(userDto.getUsername())) {
             throw new UsernameAlreadyExistsException("There is an account with that username: " + userDto.getUsername());
@@ -78,13 +85,8 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
-    //todo: create test
     @Override
     public void updateRegisteredUser(User user) {
-
-        if (user == null) {
-            throw new NullUserException();
-        }
 
         if(!userExist(user.getUsername())){
             throw new UserNotFoundException();

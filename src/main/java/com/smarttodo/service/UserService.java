@@ -3,6 +3,7 @@ package com.smarttodo.service;
 import com.smarttodo.dto.UserDto;
 import com.smarttodo.model.User;
 import com.smarttodo.service.exceptions.RoleNotFoundException;
+import com.smarttodo.service.exceptions.UserNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -11,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 public interface UserService extends UserDetailsService {
     //todo: add throws
-    User findByUsername(String username);
+    User findByUsername(String username) throws UserNotFoundException;
 
     void save(User user);
 
