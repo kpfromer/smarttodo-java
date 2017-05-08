@@ -48,7 +48,6 @@ public class TaskController {
         return "redirect:/";
     }
 
-    //todo: add test for taskDto for all tests
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
     public String addTask(@Valid @ModelAttribute TaskDto taskDto, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
