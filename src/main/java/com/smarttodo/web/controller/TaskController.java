@@ -1,5 +1,7 @@
 package com.smarttodo.web.controller;
 
+import com.smarttodo.dto.EditedTextAndEvent;
+import com.smarttodo.dto.TaskDto;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
 import com.smarttodo.service.TaskService;
@@ -35,7 +37,7 @@ public class TaskController {
     @RequestMapping({"/", "/todo"})
     public String taskList(Model model) {
         model.addAttribute("tasks", taskService.findAll());
-        model.addAttribute("newTask", new Task());
+        model.addAttribute("newTask", new TaskDto());
         return "todo";
     }
 
@@ -46,15 +48,22 @@ public class TaskController {
         return "redirect:/";
     }
 
-    //todo: add test
+    //todo: add test for taskDto for all tests
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
-    public String addTask(@Valid @ModelAttribute Task task, BindingResult bindingResult, Principal principal) {
+    public String addTask(@Valid @ModelAttribute TaskDto taskDto, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "redirect:/";
         }
 
+        EditedTextAndEvent textAndEvent = taskDto.getTextAndEvent();
+
+        Task task = new Task.TaskBuilder()
+                .withDescription(textAndEvent.getEditedText())
+                .withEvent(textAndEvent.getEvent())
+                .withComplete(false)
+                .build();
+
         User user;
-        //todo: deal with userService exception
         try {
             user = userService.findByUsername(principal.getName());
         } catch (NullPointerException | UserNotFoundException ignored){

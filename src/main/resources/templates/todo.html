@@ -12,17 +12,33 @@
                 <input type="hidden" name="id" th:value="${task.id}"/>
                 <input type="checkbox" th:id="|checked_${task.id}|" th:checked="${task.complete}"
                        onclick="this.form.submit()"/>
-                <!-- todo: add click on label to update task -->
+                <!-- todo: add click on label to update task (http://stackoverflow.com/questions/16202723/how-to-edit-data-onclick) -->
                 <label th:for="|checked_${task.id}|" th:text="${task.description}"></label>
+                <div class="secondary-content" th:text="${task.event.getFormattedEvent()}"></div>
             </form>
         </li>
         <li>
-            <form method="post" th:object="${newTask}" th:action="@{/tasks}" class="inline new-item">
-                <label><input type="text" th:field="*{description}" placeholder="New task" autocomplete="off"/></label>
+            <form method="post" th:object="${newTask}" th:action="@{/tasks}" class="inline new-item row">
+                <input class="col s10" type="text" th:field="*{description}" placeholder="New task" autocomplete="off"/>
+                <!--Todo: add date widget-->
+                <input class="col s2" type="text" th:field="*{eventText}" autocomplete="off" placeholder="Date"/>
             </form>
         </li>
     </ul>
 </div>
 <div th:replace="layout :: scripts"></div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('input:text').keypress(function (e) {
+            var code = e.keyCode || e.which;
+
+            if (code === 13) {
+                e.preventDefault();
+                $(".new-item").submit();
+            }
+            ;
+        });
+    });
+</script>
 </body>
 </html>

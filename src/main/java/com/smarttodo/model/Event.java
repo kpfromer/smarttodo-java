@@ -6,7 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 /**
  * Created by kpfromer on 4/19/17.
@@ -79,6 +83,23 @@ public class Event implements Comparable {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public String getFormattedEvent(){
+
+        if (!isCompleted()) {
+            if (isRecurring()){
+                if (getEndDate() != null){//todo: better message (include current set date)
+                    return String.format("every %s until %s", getCurrentSetDate().getDayOfWeek().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault()).toLowerCase(), getEndDate().format(ISO_LOCAL_DATE));
+                } else {
+                    return String.format("every %s", getCurrentSetDate().getDayOfWeek().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())).toLowerCase();
+                }
+            } else {
+                return String.format("%s", getCurrentSetDate().format(ISO_LOCAL_DATE));
+            }
+        } else {
+            return "";
+        }
     }
 
     @Override
