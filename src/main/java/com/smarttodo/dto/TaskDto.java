@@ -24,10 +24,7 @@ public class TaskDto {
     @NotBlank(message = "Task description can not be nothing.")
     private String description;
 
-    //todo: make sure this are not nullable
-    @NotNull(message = "Task must either be completed or not.")
-    private boolean complete;
-
+    @NotNull(message = "Event text can't be null.")
     private String eventText;
 
     public TaskDto() {
@@ -39,14 +36,6 @@ public class TaskDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isComplete() {
-        return complete;
-    }
-
-    public void setComplete(boolean complete) {
-        this.complete = complete;
     }
 
     public String getEventText() {
@@ -71,7 +60,7 @@ public class TaskDto {
         //todo: add ability to stop dates from beginning used for duedate
         //todo: natty doesn't allow for "everyday" and "every weekday" ADD IT!
 
-        EditedTextAndEvent editedTextAndEvent = null;
+        EditedTextAndEvent editedTextAndEvent = new EditedTextAndEvent(text, new Event());
 
         Parser parser = new Parser();
         List<DateGroup> groups = parser.parse(text);

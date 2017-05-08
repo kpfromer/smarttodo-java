@@ -14,9 +14,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Task extends BaseEntity {
 
-    //todo: UI Use chips for duedate in the text field: http://materializecss.com/chips.html
-
-
     //todo: add test for non nullables
     //todo: make sure this are not nullable
     @NotNull(message = "Task description can not be null.")

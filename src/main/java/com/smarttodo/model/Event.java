@@ -94,7 +94,7 @@ public class Event implements Comparable {
                 } else {
                     return String.format("every %s", getCurrentSetDate().getDayOfWeek().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())).toLowerCase();
                 }
-            } else {
+            } else {//todo: better date format
                 return String.format("%s", getCurrentSetDate().format(ISO_LOCAL_DATE));
             }
         } else {
