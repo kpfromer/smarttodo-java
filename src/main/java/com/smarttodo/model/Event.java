@@ -87,6 +87,11 @@ public class Event implements Comparable {
 
     public String getFormattedEvent(){
 
+        //todo: add test
+        if (getCurrentSetDate() == null) {
+            return "";
+        }
+
         if (!isCompleted()) {
             if (isRecurring()){
                 if (getEndDate() != null){//todo: better message (include current set date)

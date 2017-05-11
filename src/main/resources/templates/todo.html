@@ -8,14 +8,32 @@
     <!-- todo: add better todo layout: http://materializecss.com/badges.html#! -->
     <ul>
         <li th:each="task : ${tasks}">
-            <form method="post" th:action="@{/mark}" class="inline todo-item">
-                <input type="hidden" name="id" th:value="${task.id}"/>
-                <input type="checkbox" th:id="|checked_${task.id}|" th:checked="${task.complete}"
-                       onclick="this.form.submit()"/>
-                <!-- todo: add click on label to update task (http://stackoverflow.com/questions/16202723/how-to-edit-data-onclick) -->
-                <label th:for="|checked_${task.id}|" th:text="${task.description}"></label>
-                <div class="secondary-content" th:text="${task.event.getFormattedEvent()}"></div>
-            </form>
+            <!--todo: remove td padding and .col .row padding-->
+            <table cellpadding="0" cellspacing="0" class="">
+                <tbody>
+                    <tr class="inline todo-item row">
+                        <td class="col s1 no-padding">
+                            <form method="post" th:action="@{mark}">
+                                <input type="hidden" name="id" th:value="${task.id}"/>
+                                <!--todo: change to combobox, looks cooler -->
+                                <input type="checkbox" th:id="|checked_${task.id}|" th:checked="${task.complete}"
+                                       onclick="this.form.submit()"/>
+                            </form>
+                        </td>
+                        <td class="col s11 row no-padding">
+                            <form method="post" th:action="@{/update}" class="inline todo-item row">
+                                <input type="hidden" name="id" th:value="${task.id}"/>
+                                <span class="description-text col s9" th:for="|checked_${task.id}|" th:text="${task.description}"></span><!--th:for="|checked_${task.id}|"-->
+                                <input class="description-value" type="hidden" name="description" th:value="${task.description}" />
+
+                                <span class="eventText-text col s2" th:text="${task.event.getFormattedEvent()}"></span>
+                                <input class="eventText-value" type="hidden" name="eventText" th:value="${task.event.getFormattedEvent()}"/>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--todo: add break like <hr/> -->
         </li>
         <li>
             <form method="post" th:object="${newTask}" th:action="@{/tasks}" class="inline new-item row">
@@ -27,18 +45,7 @@
     </ul>
 </div>
 <div th:replace="layout :: scripts"></div>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('input:text').keypress(function (e) {
-            var code = e.keyCode || e.which;
-
-            if (code === 13) {
-                e.preventDefault();
-                $(".new-item").submit();
-            }
-            ;
-        });
-    });
-</script>
+<script type="text/javascript" th:src="@{/assets/js/jquery.editable.js}"></script>
+<script type="text/javascript" th:src="@{/assets/js/main.js}"></script>
 </body>
 </html>

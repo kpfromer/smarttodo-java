@@ -71,6 +71,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     //todo: add throws
+    //todo: only allow users to edit what is theirs!
+    //todo: add test!
     @Override
     public void saveOrUpdate(Task task) {
 

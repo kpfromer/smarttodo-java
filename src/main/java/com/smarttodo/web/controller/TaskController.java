@@ -48,12 +48,31 @@ public class TaskController {
         return "redirect:/";
     }
 
+    //todo: add test
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public String updateTask(@Valid @ModelAttribute TaskDto taskDto, BindingResult bindingResult) {
+        if(bindingResult.hasErrors() || taskDto.getId() == null){
+            return "redirect:/";
+        }
+
+        Task task = taskService.findById(taskDto.getId());
+
+        EditedTextAndEvent textAndEvent = taskDto.getTextAndEvent();
+
+        task.setDescription(textAndEvent.getEditedText());
+        task.setEvent(textAndEvent.getEvent());
+
+        taskService.saveOrUpdate(task);
+        return "redirect:/";
+    }
+
     @RequestMapping(path = "/tasks", method = RequestMethod.POST)
     public String addTask(@Valid @ModelAttribute TaskDto taskDto, BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "redirect:/";
         }
-
+        //todo: add test if taskDto event is not properly formatted!
+        //todo: deal with not properly formatted eventText!
         EditedTextAndEvent textAndEvent = taskDto.getTextAndEvent();
 
         Task task = new Task.TaskBuilder()

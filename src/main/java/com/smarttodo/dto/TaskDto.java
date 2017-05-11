@@ -27,6 +27,8 @@ public class TaskDto {
     @NotNull(message = "Event text can't be null.")
     private String eventText;
 
+    private Long id;
+
     public TaskDto() {
     }
 
@@ -46,6 +48,15 @@ public class TaskDto {
         this.eventText = eventText;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    //todo: create test
     public EditedTextAndEvent getTextAndEvent(){
         if(getEventText() != null && !getEventText().isEmpty()){
             EditedTextAndEvent textAndEvent = new EditedTextAndEvent(getDescription(), parseStringForEvent(getEventText()).getEvent());
