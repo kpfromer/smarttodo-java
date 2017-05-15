@@ -1,19 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-<!-- head settings import fragment -->
-<head th:fragment="head" lang="en">
-    <meta charset="UTF-8"/>
-    <meta description="viewport" content="width=device-width, initial-scale=1"/>
-
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"/>
-    <link rel="stylesheet" th:href="@{/assets/css/main.css}"/>
-
-    <title>Smart Todo</title>
-</head>
-
-<head th:fragment="sign-head">
+<head th:fragment="head">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -21,13 +9,12 @@
     <title>Smart Todo</title>
 
     <!-- Favicons-->
-    <link rel="icon" th:href="@{/assets/images/favicon/favicon-32x32.png}" sizes="32x32" />
+    <link rel="icon" th:href="@{/assets/images/favicon/favicon-32x32.png}" sizes="32x32" /> <!--todo: create favicon-->
     <!-- Favicons-->
-    <link rel="apple-touch-icon-precomposed" th:href="@{/assets/images/favicon/apple-touch-icon-152x152.png}" />
+    <link rel="apple-touch-icon-precomposed" th:href="@{/assets/images/favicon/apple-touch-icon-152x152.png}" /> <!--todo: create favicon-->
     <!-- For iPhone -->
     <meta name="msapplication-TileColor" content="#00bcd4" />
     <!--<meta name="msapplication-TileImage" th:content="@{/assets/images/favicon/mstile-144x144.png}">-->
-    <!-- For Windows Phone -->
 
 
     <!-- CORE CSS-->
