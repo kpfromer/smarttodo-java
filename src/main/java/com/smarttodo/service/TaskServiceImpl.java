@@ -86,6 +86,9 @@ public class TaskServiceImpl implements TaskService {
         if (task.getUser() == null){
             throw new UserNotFoundException();
         }
+
+        //todo: create a catch for null description
+        //todo: add test
         
         taskDao.save(task);
     }
