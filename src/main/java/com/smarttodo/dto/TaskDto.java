@@ -27,6 +27,9 @@ public class TaskDto {
     @NotNull(message = "Event text can't be null.")
     private String eventText;
 
+    @NotNull(message = "Task must be completed or not completed.")
+    private boolean complete;
+
     private Long id;
 
     public TaskDto() {
@@ -46,6 +49,14 @@ public class TaskDto {
 
     public void setEventText(String eventText) {
         this.eventText = eventText;
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 
     public Long getId() {

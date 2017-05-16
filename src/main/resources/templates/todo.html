@@ -1,51 +1,154 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="layout :: head"></head>
-<body>
-<nav th:replace="layout :: nav"></nav>
-<div th:replace="layout :: flash"></div>
-<div class="container">
-    <!-- todo: add better todo layout: http://materializecss.com/badges.html#! -->
-    <ul>
-        <li th:each="task : ${tasks}">
-            <!--todo: remove td padding and .col .row padding-->
-            <table cellpadding="0" cellspacing="0" class="">
-                <tbody>
-                    <tr class="inline todo-item row">
-                        <td class="col s1 no-padding">
-                            <form method="post" th:action="@{mark}">
-                                <input type="hidden" name="id" th:value="${task.id}"/>
-                                <!--todo: change to combobox, looks cooler -->
-                                <input type="checkbox" th:id="|checked_${task.id}|" th:checked="${task.complete}"
-                                       onclick="this.form.submit()"/>
-                            </form>
-                        </td>
-                        <td class="col s11 row no-padding">
-                            <form method="post" th:action="@{/update}" class="inline todo-item row">
-                                <input type="hidden" name="id" th:value="${task.id}"/>
-                                <span class="description-text col s9" th:for="|checked_${task.id}|" th:text="${task.description}"></span><!--th:for="|checked_${task.id}|"-->
-                                <input class="description-value" type="hidden" name="description" th:value="${task.description}" />
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-                                <span class="eventText-text col s2" th:text="${task.event.getFormattedEvent()}"></span>
-                                <input class="eventText-value" type="hidden" name="eventText" th:value="${task.event.getFormattedEvent()}"/>
+<!--================================================================================
+	Item Name: Materialize - Material Design Admin Template
+	Version: 3.1
+	Author: GeeksLabs
+	Author URL: http://www.themeforest.net/user/geekslabs
+================================================================================ -->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <title>Smarttodo</title>
+
+    <!-- Favicons-->
+    <link rel="icon" th:href="@{/assets/images/favicon/favicon-32x32.png}" sizes="32x32" />
+    <!-- Favicons-->
+    <link rel="apple-touch-icon-precomposed" th:href="@{/assets/images/favicon/apple-touch-icon-152x152.png}" />
+    <!-- For iPhone -->
+    <meta name="msapplication-TileColor" content="#00bcd4"/>
+    <!--<meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png}"/>-->
+    <!-- For Windows Phone -->
+
+
+    <!-- CORE CSS-->
+    <link th:href="@{/assets/css/materialize.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link th:href="@{/assets/css/style.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <!-- Custome CSS-->
+    <link th:href="@{/assets/css/custom/custom.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    <link th:href="@{/assets/js/plugins/prism/prism.css}" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link th:href="@{/assets/js/plugins/perfect-scrollbar/perfect-scrollbar.css}" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
+</head>
+
+<body>
+
+<!-- //////////////////////////////////////////////////////////////////////////// -->
+
+<!-- START HEADER -->
+<header id="header" class="page-topbar">
+    <!-- start header nav-->
+    <div class="navbar-fixed">
+        <nav class="navbar-color light-blue">
+            <div class="nav-wrapper">
+                <ul class="left">
+                    <li><h1 class="logo-wrapper"><a th:href="@{/}" class="brand-logo darken-1"><img
+                            th:src="@{/assets/images/materialize-logo.png}" alt="materialize logo" /></a> <span class="logo-text">Materialize</span>
+                    </h1></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!-- end header nav-->
+</header>
+<!-- END HEADER -->
+
+<!-- //////////////////////////////////////////////////////////////////////////// -->
+
+<!-- START MAIN -->
+
+<section id="content">
+
+    <!--start container-->
+    <div class="container">
+        <div class="section">
+
+            <div class="col s12 m12 l4">
+                <ul id="task-card" class="collection with-header">
+                    <li class="collection-header light-blue">
+                        <h4 class="task-card-title">Current Tasks</h4>
+                    </li>
+
+                    <!--todo: add functionality for dismissable-->
+                    <li th:each="task : ${tasks}" class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                        <div class="row">
+                            <form method="post" th:action="@{/update}">
+                                <div class="col s12 todo-display">
+                                    <input type="hidden" name="id" th:value="${task.id}"/>
+                                    <input class="description-value" type="hidden" name="description" th:value="${task.description}"/>
+                                    <input class="eventText-value" type="hidden" name="eventText" th:value="${task.event.getFormattedEvent()}"/>
+
+                                    <input th:id="|checked_${task.id}|" th:checked="${task.complete}" name="complete" type="checkbox" />
+                                    <label class="todo-checkbox" th:for="|checked_${task.id}|" style="text-decoration: none;">
+                                        <span class="description-display" th:text="${task.description}">ERROR</span>
+                                        <span th:text="${task.event.getFormattedEvent()}" class="secondary-content eventText-display">
+                                                        <span class="ultra-small">Today</span>
+                                                    </span>
+                                    </label>
+                                </div>
+
+                                <div class="col s12 todo-input" style="display: none;">
+                                    <div class="col s9">
+                                        <input type="text" class="enter-submit description-text" th:value="${task.description}" autocomplete="off" />
+                                    </div>
+                                    <div class="col s3">
+                                        <input type="text" class="enter-submit eventText-text" th:value="${task.event.getFormattedEvent()}" autocomplete="off" />
+                                    </div>
+                                </div>
                             </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!--todo: add break like <hr/> -->
-        </li>
-        <li>
-            <form method="post" th:object="${newTask}" th:action="@{/tasks}" class="inline new-item row">
-                <input class="col s10" type="text" th:field="*{description}" placeholder="New task" autocomplete="off"/>
-                <!--Todo: add date widget-->
-                <input class="col s2" type="text" th:field="*{eventText}" autocomplete="off" placeholder="Date"/>
-            </form>
-        </li>
-    </ul>
-</div>
-<div th:replace="layout :: scripts"></div>
-<script type="text/javascript" th:src="@{/assets/js/jquery.editable.js}"></script>
-<script type="text/javascript" th:src="@{/assets/js/main.js}"></script>
+                        </div>
+                    </li>
+                    <li class="collection-item" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                        <form method="post" th:object="${newTask}" th:action="@{/tasks}" class="col s12">
+                            <div class="row">
+                                <div class="input-field col s9">
+                                    <input id="todo-title" type="text" class="validate enter-submit" name="description" value="" th:field="*{description}" autocomplete="off" />
+                                    <label for="todo-title" class="">Todo Title</label>
+                                </div>
+                                <div class="input-field col s3">
+                                    <input id="todo-event" type="text" class="validate enter-submit" name="eventText" value="" th:field="*{eventText}" autocomplete="off" />
+                                    <label for="todo-event" class="">Event Date</label>
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--end container-->
+</section>
+
+
+<!-- //////////////////////////////////////////////////////////////////////////// -->
+
+
+<!-- ================================================
+Scripts
+================================================ -->
+
+<!-- jQuery Library -->
+<script type="text/javascript" th:src="@{/assets/js/plugins/jquery-1.11.2.min.js}"></script>
+<!--materialize js-->
+<script type="text/javascript" th:src="@{/assets/js/materialize.js}"></script>
+<!--prism
+<script type="text/javascript" src="js/prism/prism.js"></script>-->
+<!--scrollbar-->
+<script type="text/javascript" th:src="@{/assets/js/plugins/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+<!-- chartist -->
+<!--<script type="text/javascript" th:src="@{/assets/js/plugins/chartist-js/chartist.min.js}"></script>-->
+
+<!--plugins.js - Some Specific JS codes for Plugin Settings-->
+<script type="text/javascript" th:src="@{/assets/js/plugins.js}"></script>
+<!--custom-script.js - Add your own theme custom JS-->
+<script type="text/javascript" th:src="@{/assets/js/custom-script.js}"></script>
+
 </body>
+
 </html>

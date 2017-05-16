@@ -25,7 +25,7 @@ $.fn.inlineEdit = function(replaceWith) {
 
     $('.description-display, .eventText-display').click(function(event) {
 
-        var elem = $('.description-display, .eventText-display').closest('.todo-display');
+        var elem = $(this).closest('.todo-display');
         replaceWith = elem.parent().find(replaceWith);
 
         //todo: add validation(will make site faster)
@@ -80,6 +80,17 @@ $(document).ready(function () {
             $(this).closest("form").submit();
         }
     });
+
+
+    $('.todo-checkbox').on('click', function(e) {
+        if (e.target !== this)
+            return;
+
+        var checkboxInput = $(this).parent().find('input[type=checkbox]');
+        checkboxInput.prop('checked', !checkboxInput.prop('checked'));
+        $(this).closest('form').submit();
+    });
+
 
     $('.todo-display').inlineEdit('.todo-input');
 });

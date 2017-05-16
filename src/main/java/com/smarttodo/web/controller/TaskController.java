@@ -9,6 +9,7 @@ import com.smarttodo.service.UserService;
 import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import com.smarttodo.service.exceptions.UserNotFoundException;
+import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -59,6 +60,7 @@ public class TaskController {
 
         EditedTextAndEvent textAndEvent = taskDto.getTextAndEvent();
 
+        task.setComplete(taskDto.isComplete());
         task.setDescription(textAndEvent.getEditedText());
         task.setEvent(textAndEvent.getEvent());
 

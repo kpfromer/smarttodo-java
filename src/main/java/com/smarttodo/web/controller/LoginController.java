@@ -62,7 +62,7 @@ public class LoginController {
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
-    public String registerForm(Model model) {;
+    public String registerForm(Model model) {
         UserDto user = new UserDto();
         model.addAttribute("user", user);
         return "register";
