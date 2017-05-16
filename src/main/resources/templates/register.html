@@ -1,81 +1,120 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<!--================================================================================
+	Item Name: Materialize - Material Design Admin Template
+	Version: 3.1
+	Author: GeeksLabs
+	Author URL: http://www.themeforest.net/user/geekslabs
+================================================================================ -->
+
 <head th:replace="layout :: head"></head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col s12 m6 offset-m3">
-            <div class="card">
-                <!-- An image maybe? -->
-                <!--<div class="card-image">
-                    <img th:src="@{/assets/images/desktop-computer.svg}" alt="desktop computer" />
-                </div>-->
-                <div class="card-content">
-                    <form th:action="@{/register}" th:object="${user}" method="post" class="login">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                        <div class="row">
-                            <div class="col s12">
-                                <h2>Register</h2>
-                            </div>
-                        </div>
+<body class="light-blue">
+<!-- Start Page Loading -->
+<!--<div id="loader-wrapper">-->
+    <!--<div id="loader"></div>-->
+    <!--<div class="loader-section section-left"></div>-->
+    <!--<div class="loader-section section-right"></div>-->
+<!--</div>-->
+<!-- End Page Loading -->
 
-                        <div class="divider"></div>
-                        <br/>
-                        <div th:classappend="row" th:replace="layout :: flash"></div>
-                        <div class="row">
-                            <div class="col s12 l8 input-field"
-                                 th:classappend="${#fields.hasErrors('username')}? 'error' : ''">
-                                <input id="username" type="text" th:field="*{username}"/>
-                                <label for="username">Username</label>
-                                <!--todo:better errors! they should be red-->
-                                <div class="error-message" th:if="${#fields.hasErrors('username')}"
-                                     th:errors="*{username}"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12 l8 input-field"
-                                 th:classappend="${#fields.hasErrors('password')}? 'error' : ''">
-                                <input id="password" type="password" th:field="*{password}"/>
-                                <label for="password">Password</label>
-                                <div class="error-message" th:if="${#fields.hasErrors('password')}"
-                                     th:errors="*{password}"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12 l8 input-field"
-                                 th:classappend="${#fields.hasErrors('global')}? 'error' : ''">
-                                <input id="passwordMatching" type="password" th:field="*{matchingPassword}"/>
-                                <label for="passwordMatching">Confirm Password</label>
-                                <div class="error-message" th:if="${#fields.hasErrors('global')}"
-                                     th:errors="*{global}"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12 l8 input-field"
-                                 th:classappend="${#fields.hasErrors('email')}? 'error' : ''">
-                                <input id="email" type="email" th:field="*{email}"/>
-                                <label for="email">Email</label>
-                                <div class="error-message" th:if="${#fields.hasErrors('email')}"
-                                     th:errors="*{email}"></div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12">
-                                <button type="submit" class="btn">Register</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12">
-                                <a th:href="@{/login}">Login</a>
-                            </div>
-                        </div>
-                    </form>
+
+<div id="login-page" class="row">
+    <div class="col s12 z-depth-4 card-panel">
+        <form class="login-form" th:action="@{/register}" th:object="${user}" method="post">
+            <div class="row">
+                <div class="input-field col s12 center">
+                    <h4>Register</h4>
+                    <p class="center">Join Smart Todo now!</p>
                 </div>
             </div>
-        </div>
+
+            <div th:replace="layout :: flash"></div>
+
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="mdi-social-person-outline prefix"></i>
+                    <input id="username" type="text" th:field="*{username}"/>
+                    <label for="username" class="center-align">Username</label>
+                </div>
+            </div>
+
+            <div id="card-alert" class="card red" th:if="${#fields.hasErrors('username')}">
+                <div class="card-content white-text">
+                    <p th:errors="*{username}">ERROR : Something went wrong</p>
+                </div>
+                <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="mdi-communication-email prefix"></i>
+                    <input id="email" type="email" th:field="*{email}"/>
+                    <label for="email" class="center-align">Email</label>
+                </div>
+            </div>
+
+            <div id="card-alert" class="card red" th:if="${#fields.hasErrors('email')}">
+                <div class="card-content white-text">
+                    <p th:errors="*{email}">ERROR : Something went wrong</p>
+                </div>
+                <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="mdi-action-lock-outline prefix"></i>
+                    <input id="password" type="password" th:field="*{password}"/>
+                    <label for="password">Password</label>
+                </div>
+            </div>
+
+            <div id="card-alert" class="card red" th:if="${#fields.hasErrors('password')}">
+                <div class="card-content white-text">
+                    <p th:errors="*{password}">ERROR : Something went wrong</p>
+                </div>
+                <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="mdi-action-lock-outline prefix"></i>
+                    <input id="password-again" type="password" th:field="*{matchingPassword}"/>
+                    <label for="password-again">Confirm Password</label>
+                </div>
+            </div>
+
+            <div id="card-alert" class="card red" th:if="${#fields.hasErrors('global')}">
+                <div class="card-content white-text">
+                    <p th:errors="*{global}">ERROR : Something went wrong</p>
+                </div>
+                <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <button type="submit" class="btn waves-effect waves-light col s12">Register Now</button>
+                </div>
+                <div class="input-field col s12">
+                    <p class="margin center medium-small sign-up">Already have an account? <a th:href="@{/login}">Login</a>
+                    </p>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
 <div th:replace="layout :: scripts"></div>
+
 </body>
+
 </html>

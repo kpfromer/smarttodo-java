@@ -68,7 +68,6 @@ public class LoginController {
         return "register";
     }
 
-
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public String createUser(@ModelAttribute("user") @Valid UserDto userDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 

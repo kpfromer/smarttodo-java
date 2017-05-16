@@ -4,6 +4,7 @@ import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 import com.smarttodo.dao.TaskDao;
 import com.smarttodo.dao.UserDao;
+import com.smarttodo.dto.EditedTextAndEvent;
 import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
@@ -70,10 +71,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     //todo: add throws
+    //todo: only allow users to edit what is theirs!
+    //todo: add test!
     @Override
     public void saveOrUpdate(Task task) {
-
-        task = parseStringForLocalDate(task);
 
         //todo: add event null exception
         //todo: move to task
@@ -85,64 +86,11 @@ public class TaskServiceImpl implements TaskService {
         if (task.getUser() == null){
             throw new UserNotFoundException();
         }
+
+        //todo: create a catch for null description
+        //todo: add test
         
         taskDao.save(task);
     }
 
-    private Task parseStringForLocalDate(Task task) {
-
-        //todo: add ability to stop dates from beginning used for duedate
-        //todo: natty doesn't allow for "everyday" and "every weekday" ADD IT!
-
-        if (task.getEvent() == null) {
-            Parser parser = new Parser();
-            List<DateGroup> groups = parser.parse(task.getDescription());
-            for (DateGroup group : groups) {
-
-                List<LocalDate> dates;
-
-                ZoneId timeZone = ZoneId.systemDefault();
-
-                dates = group.getDates().stream().map(date -> date.toInstant().atZone(timeZone).toLocalDate()).collect(Collectors.toList());
-
-                String matchingValue = group.getText();
-                String fullText = group.getFullText();
-
-                String editedText = fullText;
-
-                LocalDate duedate;
-                LocalDate recursUntil = null;
-
-                //todo: get user time zone (NOT SYSTEM TIME ZONE)
-
-                //todo: allow for choice of date to be used
-
-                duedate = dates.get(0);
-                if (group.isRecurring()) {
-
-                    if (group.getRecursUntil() != null) {
-                        recursUntil = group.getRecursUntil().toInstant().atZone(timeZone).toLocalDate();
-                    }
-
-                    editedText = editedText.replaceFirst("\\s?" + group.getParseLocations().get("recurrence").get(0).getText() + "\\s?", "");
-
-                }
-
-
-                editedText = editedText.replaceFirst("\\s?" + matchingValue + "\\s?", "");
-
-                Event event = new Event.EventBuilder()
-                        .withCurrentSetDate(duedate)
-                        .withStartDate((group.isRecurring()  ? duedate : null))
-                        .withEndDate(recursUntil)
-                        .withRecurring(group.isRecurring())
-                        .build();
-
-                task.setDescription(editedText);
-                task.setEvent(event);
-
-            }
-        }
-        return task;
-    }
 }

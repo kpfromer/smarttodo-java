@@ -1,5 +1,7 @@
 package com.smarttodo.web.controller;
 
+import com.smarttodo.dto.EditedTextAndEvent;
+import com.smarttodo.dto.TaskDto;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
 import com.smarttodo.service.TaskService;
@@ -7,6 +9,7 @@ import com.smarttodo.service.UserService;
 import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import com.smarttodo.service.exceptions.UserNotFoundException;
+import com.smarttodo.web.FlashMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -35,7 +38,7 @@ public class TaskController {
     @RequestMapping({"/", "/todo"})
     public String taskList(Model model) {
         model.addAttribute("tasks", taskService.findAll());
-        model.addAttribute("newTask", new Task());
+        model.addAttribute("newTask", new TaskDto());
         return "todo";
     }
 
@@ -47,14 +50,40 @@ public class TaskController {
     }
 
     //todo: add test
-    @RequestMapping(path = "/tasks", method = RequestMethod.POST)
-    public String addTask(@Valid @ModelAttribute Task task, BindingResult bindingResult, Principal principal) {
-        if (bindingResult.hasErrors()) {
+    @RequestMapping(path = "/update", method = RequestMethod.POST)
+    public String updateTask(@Valid @ModelAttribute TaskDto taskDto, BindingResult bindingResult) {
+        if(bindingResult.hasErrors() || taskDto.getId() == null){
             return "redirect:/";
         }
 
+        Task task = taskService.findById(taskDto.getId());
+
+        EditedTextAndEvent textAndEvent = taskDto.getTextAndEvent();
+
+        task.setComplete(taskDto.isComplete());
+        task.setDescription(textAndEvent.getEditedText());
+        task.setEvent(textAndEvent.getEvent());
+
+        taskService.saveOrUpdate(task);
+        return "redirect:/";
+    }
+
+    @RequestMapping(path = "/tasks", method = RequestMethod.POST)
+    public String addTask(@Valid @ModelAttribute TaskDto taskDto, BindingResult bindingResult, Principal principal) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/";
+        }
+        //todo: add test if taskDto event is not properly formatted!
+        //todo: deal with not properly formatted eventText!
+        EditedTextAndEvent textAndEvent = taskDto.getTextAndEvent();
+
+        Task task = new Task.TaskBuilder()
+                .withDescription(textAndEvent.getEditedText())
+                .withEvent(textAndEvent.getEvent())
+                .withComplete(false)
+                .build();
+
         User user;
-        //todo: deal with userService exception
         try {
             user = userService.findByUsername(principal.getName());
         } catch (NullPointerException | UserNotFoundException ignored){

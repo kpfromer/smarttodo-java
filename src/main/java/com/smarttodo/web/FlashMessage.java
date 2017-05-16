@@ -30,4 +30,14 @@ public class FlashMessage {
         INFO,
         FAILURE
     }
+
+    public String getStatusColor(){
+        if (this.getStatus() == Status.SUCCESS) {
+            return "green";
+        } else if (this.getStatus() == Status.INFO){
+            return "deep-purple";
+        } else {
+            return "red";
+        }
+    }
 }

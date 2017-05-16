@@ -1,53 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head th:replace="layout :: head"></head>
-<body>
-<div class="container">
-    <div class="row">
-        <div class="col s12 m6 offset-m3">
-            <div class="card">
-                <!-- An image maybe? -->
-                <!--<div class="card-image">
-                    <img th:src="@{/assets/images/desktop-computer.svg}" alt="desktop computer" />
-                </div>-->
-                <div class="card-content">
-                    <form th:action="@{/login}" th:object="${user}" method="post" class="login">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <div class="row">
-                            <div class="col s12">
-                                <h2>Login</h2>
-                            </div>
-                        </div>
 
-                        <div class="divider"></div>
-                        <br/>
-                        <div th:classappend="row" th:replace="layout :: flash"></div>
-                        <div class="row input-field">
-                            <div class="col s12">
-                                <input th:field="*{username}" placeholder="Username"/>
-                            </div>
-                        </div>
-                        <div class="row input-field">
-                            <div class="col s12">
-                                <input type="password" th:field="*{password}" placeholder="Password"/>
-                            </div>
-                        </div>
-                        <div class="row input-field">
-                            <div class="col s12">
-                                <button type="submit" class="btn">Login</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col s12">
-                                <a th:href="@{/register}">Register</a>
-                            </div>
-                        </div>
-                    </form>
+<!--================================================================================
+	Item Name: Materialize - Material Design Admin Template
+	Version: 3.1
+	Author: GeeksLabs
+	Author URL: http://www.themeforest.net/user/geekslabs
+================================================================================ -->
+
+<head th:replace="layout :: head"></head>
+
+<body class="light-blue">
+<!-- Start Page Loading -->
+<!--<div id="loader-wrapper">-->
+    <!--<div id="loader"></div>-->
+    <!--<div class="loader-section section-left"></div>-->
+    <!--<div class="loader-section section-right"></div>-->
+<!--</div>-->
+<!-- End Page Loading -->
+
+
+<div id="login-page" class="row">
+    <div class="col s12 z-depth-4 card-panel">
+        <form class="login-form" th:action="@{/login}" th:object="${user}" method="post">
+            <div class="row">
+                <div class="input-field col s12 center">
+                    <img th:src="@{/assets/images/login-logo.png}" alt=""
+                         class="circle responsive-img valign profile-image-login"/>
+                    <p class="center login-form-text">Smart Todo Login</p>
                 </div>
             </div>
-        </div>
+
+            <div th:replace="layout :: flash"></div>
+
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="mdi-social-person-outline prefix"></i>
+                    <input th:field="*{username}" id="username" type="text"/>
+                    <label for="username" class="center-align">Username</label>
+                </div>
+            </div>
+
+            <div class="row margin">
+                <div class="input-field col s12">
+                    <i class="mdi-action-lock-outline prefix"></i>
+                    <input id="password" type="password" th:field="*{password}"/>
+                    <label for="password">Password</label>
+                </div>
+            </div>
+
+            <!--<div class="row">          todo: use-->
+            <!--<div class="input-field col s12 m12 l12  login-text">-->
+            <!--<input type="checkbox" id="remember-me" />-->
+            <!--<label for="remember-me">Remember me</label>-->
+            <!--</div>-->
+            <!--</div>-->
+            <div class="row">
+                <div class="input-field col s12">
+                    <button type="submit" class="btn waves-effect waves-light col s12">Login</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s6 m6 l6">
+                    <p class="margin medium-small"><a th:href="@{/register}">Register Now!</a></p>
+                </div>
+                <!--<div class="input-field col s6 m6 l6"> todo: use!-->
+                    <!--<p class="margin right-align medium-small"><a th:href="@{/forgotPassword}">Forgot password?</a></p>-->
+                <!--</div>-->
+            </div>
+
+        </form>
     </div>
 </div>
+
 <div th:replace="layout :: scripts"></div>
+
 </body>
+
 </html>
