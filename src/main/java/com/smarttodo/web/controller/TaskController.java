@@ -37,6 +37,7 @@ public class TaskController {
 
     @RequestMapping({"/", "/todo"})
     public String taskList(Model model) {
+        //todo: fix order of items changing!
         model.addAttribute("tasks", taskService.findAll());
         model.addAttribute("newTask", new TaskDto());
         return "todo";
@@ -64,6 +65,7 @@ public class TaskController {
         task.setDescription(textAndEvent.getEditedText());
         task.setEvent(textAndEvent.getEvent());
 
+        //todo: catch null description
         taskService.saveOrUpdate(task);
         return "redirect:/";
     }
@@ -91,6 +93,7 @@ public class TaskController {
         }
 
         task.setUser(user);
+        //todo: catch null description
         taskService.saveOrUpdate(task);
         return "redirect:/";
     }

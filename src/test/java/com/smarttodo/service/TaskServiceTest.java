@@ -4,10 +4,7 @@ import com.smarttodo.dao.TaskDao;
 import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
-import com.smarttodo.service.exceptions.EventNullException;
-import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
-import com.smarttodo.service.exceptions.TaskNotFoundException;
-import com.smarttodo.service.exceptions.UserNotFoundException;
+import com.smarttodo.service.exceptions.*;
 import org.assertj.core.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -148,12 +145,33 @@ public class TaskServiceTest {
         verify(dao, never()).save(any(Task.class));
     }
 
+    @Test(expected = DescriptionNullException.class)
+    public void save_ShouldThrowDescriptionNullException() throws Exception {
+
+        Task taskNullDescription = new Task.TaskBuilder()
+                .withComplete(true)
+                .withDescription(null)
+                .withUser(new User(1L))
+                .build();
+
+        Task taskEmptyDescription = new Task.TaskBuilder()
+                .withComplete(true)
+                .withDescription("")
+                .withUser(new User(1L))
+                .build();
+
+        service.saveOrUpdate(taskNullDescription);
+        service.saveOrUpdate(taskEmptyDescription);
+        verify(dao, never()).save(any(Task.class));
+    }
+
     @Test
     public void toggleComplete_ShouldToggleComplete() throws Exception {
         when(dao.findOne(1L)).thenReturn(new Task.TaskBuilder()
                 .withComplete(true)
                 .withEvent(new Event())
                 .withUser(new User(1L))
+                .withDescription("hello world")
                 .build());
         service.toggleComplete(1L);
         assertEquals("toggleComplete should toggle the value of complete", false, dao.findOne(1L).isComplete());

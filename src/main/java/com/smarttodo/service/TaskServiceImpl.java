@@ -8,11 +8,13 @@ import com.smarttodo.dto.EditedTextAndEvent;
 import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
+import com.smarttodo.service.exceptions.DescriptionNullException;
 import com.smarttodo.service.exceptions.EventNullException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import com.smarttodo.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -70,25 +72,23 @@ public class TaskServiceImpl implements TaskService {
         this.saveOrUpdate(task);
     }
 
-    //todo: add throws
     //todo: only allow users to edit what is theirs!
     //todo: add test!
     @Override
-    public void saveOrUpdate(Task task) {
+    public void saveOrUpdate(Task task) throws UsernameNotFoundException, DescriptionNullException {
 
         //todo: add event null exception
-        //todo: move to task
         if (task.getEvent() == null){
             task.setEvent(new Event());
         }
 
-        //todo: add test for controller
         if (task.getUser() == null){
             throw new UserNotFoundException();
         }
 
-        //todo: create a catch for null description
-        //todo: add test
+        if (task.getDescription() == null || task.getDescription().isEmpty()) {
+            throw new DescriptionNullException();
+        }
         
         taskDao.save(task);
     }
