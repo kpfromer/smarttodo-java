@@ -14,17 +14,13 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Task extends BaseEntity {
 
-    //todo: add test for non nullables
-    //todo: make sure this are not nullable
     @NotNull(message = "Task description can not be null.")
     @NotBlank(message = "Task description can not be nothing.")
     private String description;
 
-    //todo: make sure this are not nullable
     @NotNull(message = "Task must either be completed or not.")
     private boolean complete;
 
-    //todo: make sure this are not nullable
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

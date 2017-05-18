@@ -82,8 +82,6 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-
-        //todo: add event null exception
         if (task.getEvent() == null){
             task.setEvent(new Event());
         }

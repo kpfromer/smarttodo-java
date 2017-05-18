@@ -29,12 +29,10 @@ public class Event implements Comparable {
     @Type(type = "java.time.LocalDate")
     private LocalDate endDate;
 
-    //todo: add validation
     @NotNull
     @Column
     private boolean recurring;
 
-    //todo: add validation
     @NotNull
     @Column
     private boolean completed;

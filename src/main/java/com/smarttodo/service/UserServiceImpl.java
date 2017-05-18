@@ -32,8 +32,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
 
-        //todo: add null protection
-
         User user = userDao.findByUsername(username);
 
         if (user == null) {
@@ -59,9 +57,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerNewUserAccount(UserDto userDto) throws UsernameAlreadyExistsException, EmailAlreadyExistsException {
 
-        //todo: add null userDto protection
-        //todo: add test for above
-
         if (userExist(userDto.getUsername())) {
             throw new UsernameAlreadyExistsException("There is an account with that username: " + userDto.getUsername());
         }
@@ -81,8 +76,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateRegisteredUser(User user) throws UserNotFoundException {
-
-        //todo: add null protection
 
         if(!userExist(user.getUsername())){
             throw new UserNotFoundException();
