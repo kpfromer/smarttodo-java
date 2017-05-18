@@ -2,6 +2,7 @@ package com.smarttodo.service;
 
 import com.smarttodo.dao.TaskDao;
 import com.smarttodo.model.Event;
+import com.smarttodo.model.Role;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
 import com.smarttodo.service.exceptions.*;
@@ -81,7 +82,6 @@ public class TaskServiceTest {
     @Test
     public void save_ShouldSaveTask() throws Exception {
         Task task = new Task.TaskBuilder()
-                .withId(1L)
                 .withComplete(true)
                 .withDescription("Hello World")
                 .withUser(new User(1L))
@@ -99,7 +99,6 @@ public class TaskServiceTest {
     public void save_ShouldCreateTaskWithEmptyEventWhenEventIsNull() throws Exception {
 
         Task task = new Task.TaskBuilder()
-                .withId(1L)
                 .withComplete(false)
                 .withUser(new User(1L))
                 .withDescription("Hello World")
@@ -163,6 +162,52 @@ public class TaskServiceTest {
         service.saveOrUpdate(taskNullDescription);
         service.saveOrUpdate(taskEmptyDescription);
         verify(dao, never()).save(any(Task.class));
+    }
+
+    @Test(expected = InvalidTaskId.class)
+    public void save_ShouldNotUpdateWhenItIsAnotherUsersTask() throws Exception {
+
+        //The reason I declare the object twice to make sure they are different objects(that reference different objects)
+
+        User originalUser = new User.UserBuilder()
+                .withId(1L)
+                .withEnabled(true)
+                .withEmail("example@gmail.com")
+                .withUsername("example")
+                .withPassword("password12")
+                .withRole(new Role(1L))
+                .build();
+
+        Task originalTask = new Task.TaskBuilder()
+                .withId(1L)
+                .withComplete(false)
+                .withDescription("Hello")
+                .withEvent(new Event())
+                .withUser(originalUser)
+                .build();
+
+        User newUser = new User.UserBuilder()
+                .withId(1L)
+                .withEnabled(true)
+                .withEmail("example@gmail.com")
+                .withUsername("example")
+                .withPassword("password12")
+                .withRole(new Role(1L))
+                .build();
+
+        Task newTask = new Task.TaskBuilder()
+                .withId(1L)
+                .withComplete(true)
+                .withDescription("Hello world")
+                .withEvent(new Event())
+                .withUser(newUser)
+                .build();
+
+
+        when(dao.findOne(any(Long.class))).thenReturn(originalTask);
+        service.saveOrUpdate(newTask);
+        verify(dao, never()).save(any(Task.class));
+
     }
 
     @Test
