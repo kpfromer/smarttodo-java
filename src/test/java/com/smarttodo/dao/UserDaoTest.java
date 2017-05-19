@@ -44,8 +44,6 @@ public class UserDaoTest {
         assertThat(dao.findByUsername("user1"), notNullValue());
     }
 
-    //todo: make sure this is correct
-    //I don't know if this is the correct way of doing things
     @Test
     public void userPassword_ShouldBeEncrypted() throws Exception {
         User user = new User();
