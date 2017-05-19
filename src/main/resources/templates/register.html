@@ -22,7 +22,7 @@
 
 <div id="login-page" class="row">
     <div class="col s12 z-depth-4 card-panel">
-        <form class="login-form" th:action="@{/register}" th:object="${user}" method="post">
+        <form id="register" class="login-form" th:action="@{/register}" th:object="${user}" method="post">
             <div class="row">
                 <div class="input-field col s12 center">
                     <h4>Register</h4>
@@ -86,8 +86,8 @@
             <div class="row margin">
                 <div class="input-field col s12">
                     <i class="mdi-action-lock-outline prefix"></i>
-                    <input id="password-again" type="password" th:field="*{matchingPassword}"/>
-                    <label for="password-again">Confirm Password</label>
+                    <input id="matchingPassword" type="password" th:field="*{matchingPassword}"/>
+                    <label for="matchingPassword">Confirm Password</label>
                 </div>
             </div>
 

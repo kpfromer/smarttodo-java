@@ -78,7 +78,7 @@
                     <!--todo: add functionality for dismissable-->
                     <li th:each="task : ${tasks}" class="collection-item" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
                         <div class="row">
-                            <form method="post" th:action="@{/update}">
+                            <form class="todo-form" method="post" th:action="@{/update}">
                                 <div class="col s12 todo-display">
                                     <input type="hidden" name="id" th:value="${task.id}"/>
                                     <input class="description-value" type="hidden" name="description" th:value="${task.description}"/>

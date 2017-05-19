@@ -30,7 +30,6 @@ $.fn.inlineEdit = function(replaceWith) {
 
         //todo: add validation(will make site faster)
 
-
         event.preventDefault();
         event.stopPropagation();
 
@@ -71,6 +70,98 @@ $.fn.inlineEdit = function(replaceWith) {
 
 
 $(document).ready(function () {
+
+    $("#login").validate({
+        rules: {
+            username: {
+                required: true,
+                minlength: 5
+            },
+            password: {
+                required: true,
+                minlength: 5
+            }
+        },
+        //For custom messages
+        messages: {
+            username:{
+                required: "Enter a username",
+                minlength: "Enter at least 5 characters"
+            },
+            password: {
+                required: "Enter a password",
+                minlength: "Enter at least 5 characters"
+            }
+        },
+        errorElement : 'div',
+        errorPlacement: function(error, element) {
+            var placement = $(element).data('error');
+            if (placement) {
+                $(placement).append(error)
+            } else {
+                error.insertAfter(element);
+            }
+        }
+    });
+
+
+    $("#register").validate({
+        rules: {
+            username: {
+                required: true,
+                minlength: 4,
+                maxlength: 20
+            },
+            email: {
+                required: true,
+                email:true
+            },
+            password: {
+                required: true,
+                minlength: 8,
+                maxlength: 100
+            },
+            matchingPassword: {
+                required: true,
+                minlength: 8,
+                maxlength: 100,
+                equalTo: "#password"
+            }
+        },
+        //For custom messages
+        messages: {
+            username:{
+                required: "Enter a username",
+                minlength: "Enter at least 5 characters",
+                maxlength: "Username must be less than 20 characters"
+            },
+            email:{
+                required: "Enter an email address",
+                email: "Enter a valid email address"
+            },
+            password:{
+                required: "Enter a password",
+                minlength: "Enter at least 5 characters",
+                maxlength: "Password must be less than 100 characters"
+            },
+            matchingPassword:{
+                required: "Enter the same password",
+                minlength: "Enter at least 5 characters",
+                equalTo: "Passwords must match",
+                maxlength: "Password must be less than 100 characters"
+            }
+        },
+        errorElement : 'div',
+        errorPlacement: function(error, element) {
+            var placement = $(element).data('error');
+            if (placement) {
+                $(placement).append(error)
+            } else {
+                error.insertAfter(element);
+            }
+        }
+    });
+
 
     $('.enter-submit').keypress(function (e) {
         var code = e.keyCode || e.which;
