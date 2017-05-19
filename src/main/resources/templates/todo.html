@@ -76,7 +76,7 @@
                     </li>
 
                     <!--todo: add functionality for dismissable-->
-                    <li th:each="task : ${tasks}" class="collection-item dismissable" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                    <li th:each="task : ${tasks}" class="collection-item" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
                         <div class="row">
                             <form method="post" th:action="@{/update}">
                                 <div class="col s12 todo-display">
