@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Created by kpfromer on 5/7/17.
  */
+
 public class TaskDto {
 
     //todo: UI Use chips for duedate in the text field: http://materializecss.com/chips.html
@@ -67,14 +68,33 @@ public class TaskDto {
         this.id = id;
     }
 
-    //todo: create test
     public EditedTextAndEvent getTextAndEvent(){
+
+        EditedTextAndEvent textAndEvent;
+
+        //checks if the eventText field is null or empty
         if(getEventText() != null && !getEventText().isEmpty()){
-            EditedTextAndEvent textAndEvent = new EditedTextAndEvent(getDescription(), parseStringForEvent(getEventText()).getEvent());
-            return textAndEvent;
+
+            //if so, set the TE (textAndEvent) description to the description field
+            //also parse the eventText field for a date and set TE to the Event
+            textAndEvent = new EditedTextAndEvent(getDescription(), parseStringForEvent(getEventText()).getEvent());
+
         } else {
-            return parseStringForEvent(getDescription());
+
+            //if not, run parseStringForEvent on the description field
+            textAndEvent = parseStringForEvent(getDescription());
+
         }
+
+        //after all that check if description is null(should never be) or empty
+        if (textAndEvent.getEditedText() == null || textAndEvent.getEditedText().isEmpty()) {
+            //if so, then don't do anything with the Event and return unaltered description
+            return new EditedTextAndEvent(getDescription(), new Event());
+        } else {
+            //otherwise return TE
+            return textAndEvent;
+        }
+
     }
 
     private EditedTextAndEvent parseStringForEvent(String text) {

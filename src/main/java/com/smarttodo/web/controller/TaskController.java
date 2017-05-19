@@ -2,10 +2,12 @@ package com.smarttodo.web.controller;
 
 import com.smarttodo.dto.EditedTextAndEvent;
 import com.smarttodo.dto.TaskDto;
+import com.smarttodo.model.Event;
 import com.smarttodo.model.Task;
 import com.smarttodo.model.User;
 import com.smarttodo.service.TaskService;
 import com.smarttodo.service.UserService;
+import com.smarttodo.service.exceptions.DescriptionNullException;
 import com.smarttodo.service.exceptions.TaskAlreadyExistsException;
 import com.smarttodo.service.exceptions.TaskNotFoundException;
 import com.smarttodo.service.exceptions.UserNotFoundException;
@@ -75,8 +77,7 @@ public class TaskController {
         if (bindingResult.hasErrors()) {
             return "redirect:/";
         }
-        //todo: add test if taskDto event is not properly formatted!
-        //todo: deal with not properly formatted eventText!
+
         EditedTextAndEvent textAndEvent = taskDto.getTextAndEvent();
 
         Task task = new Task.TaskBuilder()
