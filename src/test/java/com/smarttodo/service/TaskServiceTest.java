@@ -80,7 +80,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void save_ShouldSaveTask() throws Exception {
+    public void saveOrUpdate_ShouldSaveTask() throws Exception {
         Task task = new Task.TaskBuilder()
                 .withComplete(true)
                 .withDescription("Hello World")
@@ -96,7 +96,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void save_ShouldCreateTaskWithEmptyEventWhenEventIsNull() throws Exception {
+    public void saveOrUpdate_ShouldCreateTaskWithEmptyEventWhenEventIsNull() throws Exception {
 
         Task task = new Task.TaskBuilder()
                 .withComplete(false)
@@ -118,7 +118,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void save_ShouldSaveTaskWithNullId() throws Exception {
+    public void saveOrUpdate_ShouldSaveTaskWithNullId() throws Exception {
         Task task = new Task.TaskBuilder()
                 .withComplete(true)
                 .withDescription("Hello World")
@@ -134,7 +134,7 @@ public class TaskServiceTest {
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void save_ShouldThrowUserNotFoundException() throws Exception {
+    public void saveOrUpdate_ShouldThrowUserNotFoundException() throws Exception {
         Task task = new Task.TaskBuilder()
                 .withComplete(true)
                 .withDescription("Hello World")
@@ -145,7 +145,7 @@ public class TaskServiceTest {
     }
 
     @Test(expected = DescriptionNullException.class)
-    public void save_ShouldThrowDescriptionNullException() throws Exception {
+    public void saveOrUpdate_ShouldThrowDescriptionNullException() throws Exception {
 
         Task taskNullDescription = new Task.TaskBuilder()
                 .withComplete(true)
@@ -165,7 +165,7 @@ public class TaskServiceTest {
     }
 
     @Test(expected = InvalidTaskId.class)
-    public void save_ShouldNotUpdateWhenItIsAnotherUsersTask() throws Exception {
+    public void saveOrUpdate_ShouldNotUpdateWhenItIsAnotherUsersTask() throws Exception {
 
         //The reason I declare the object twice to make sure they are different objects(that reference different objects)
 
