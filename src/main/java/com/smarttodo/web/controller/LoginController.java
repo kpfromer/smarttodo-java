@@ -9,8 +9,10 @@ import com.smarttodo.service.TokenService;
 import com.smarttodo.service.UserService;
 import com.smarttodo.service.exceptions.*;
 import com.smarttodo.web.FlashMessage;
+import com.smarttodo.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -107,23 +109,22 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/registrationConfirm", method = RequestMethod.GET)
-    public String confirmRegistration(@RequestParam("token") String token, Model model, RedirectAttributes redirectAttributes) {
+    public String confirmRegistration(@RequestParam("token") String token, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 
         VerificationToken verificationToken;
 
         try {
             verificationToken = tokenService.getVerificationToken(token);
         } catch (VerificationTokenNotFoundException ex){
-            // Send to error page is token does not exist or is expired
-            model.addAttribute("message", "Error! Token doesn't exist.");
-            return "badToken";
+            throw new ResourceNotFoundException();
         }
 
         if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            model.addAttribute("message", "Error! Token has expired.");
-            model.addAttribute("expired", true);
-            model.addAttribute("token", token);
-            return "badToken";
+            //todo: add new page
+            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+            redirectAttributes.addFlashAttribute("flash", new FlashMessage(String.format("Token has expired. Please go to the following link: %s/resendRegistrationToken?token=%s", baseUrl, token), FlashMessage.Status.INFO));
+
+            return "redirect:/login";
         }
 
         User user = verificationToken.getUser();
@@ -141,8 +142,7 @@ public class LoginController {
         try {
             newToken = tokenService.generateNewVerificationToken(existingToken);
         } catch (VerificationTokenNotFoundException ex){
-            model.addAttribute("message", "Error! Token doesn't exist.");
-            return "badToken";
+            throw new ResourceNotFoundException();
         }
 
         User alreadyRegisteredUser = newToken.getUser();
@@ -152,15 +152,4 @@ public class LoginController {
         return "redirect:/login";
     }
 
-    @ExceptionHandler(RoleNotFoundException.class)
-    public String roleNotFound(Model model, Exception ex) {
-        model.addAttribute("ex", ex);
-        return "error";
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public String userNotFound(Model model, Exception ex){
-        model.addAttribute("ex", ex);
-        return "error";
-    }
 }

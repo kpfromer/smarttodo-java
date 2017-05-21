@@ -252,21 +252,19 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void confirmRegistration_ShouldRenderBadTokenWhenVerificationTokenNotFoundExceptionIsThrown() throws Exception {
+    public void confirmRegistration_ShouldRedirectTo404PageWhenVerificationTokenNotFoundExceptionIsThrown() throws Exception {
         when(tokenService.getVerificationToken("b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a"))
                 .thenThrow(new VerificationTokenNotFoundException());
         doNothing().when(userService).updateRegisteredUser(any(User.class));
 
         mockMvc.perform(get("/registrationConfirm").param("token", "b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("badToken"))
-                .andExpect(model().attribute("message", notNullValue()));
+                .andExpect(status().is(404));
         verify(tokenService).getVerificationToken("b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a");
         verify(userService, never()).updateRegisteredUser(any(User.class));
     }
 
     @Test
-    public void confirmRegistration_ShouldRenderBadTokenWhenTokenIsExpired() throws Exception {
+    public void confirmRegistration_ShouldRedirectWhenTokenIsExpired() throws Exception {
         User user = new User.UserBuilder()
                 .withId(1L)
                 .withEmail("example@gmail.com")
@@ -287,11 +285,7 @@ public class LoginControllerTest {
         doNothing().when(userService).updateRegisteredUser(any(User.class));
 
         mockMvc.perform(get("/registrationConfirm").param("token", "b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("badToken"))
-                .andExpect(model().attribute("message", notNullValue()))
-                .andExpect(model().attribute("expired", true))
-                .andExpect(model().attribute("token","b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a"));
+                .andExpect(redirectedUrl("/login"));
 
         verify(tokenService).getVerificationToken("b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a");
         verify(userService, never()).updateRegisteredUser(any(User.class));
@@ -328,15 +322,13 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void resendRegistrationToken_ShouldRenderBadTokenWhenVerificationTokenNotFoundExceptionIsThrown() throws Exception {
+    public void resendRegistrationToken_ShouldRedirectTo404PageWhenVerificationTokenNotFoundExceptionIsThrown() throws Exception {
 
         when(tokenService.generateNewVerificationToken("b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a"))
                 .thenThrow(new VerificationTokenNotFoundException());
 
         mockMvc.perform(get("/resendRegistrationToken").param("token", "b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("badToken"))
-                .andExpect(model().attribute("message", notNullValue()));
+                .andExpect(status().is(404));
 
         verify(tokenService).generateNewVerificationToken("b3c8ce26-ff00-4c77-b3b1-b4e8c69de37a");
         verify(eventPublisher, never()).publishEvent(any(OnRegistrationCompleteEvent.class));
