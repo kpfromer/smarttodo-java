@@ -99,7 +99,8 @@ public class LoginController {
         }
 
         try {
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale()));
+            String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), baseUrl));
         } catch (Exception ex){
             redirectAttributes.addFlashAttribute("flash", new FlashMessage("Token Event Error!", FlashMessage.Status.FAILURE));
             return "redirect:/register";
@@ -120,10 +121,8 @@ public class LoginController {
         }
 
         if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            //todo: add new page
             String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
             redirectAttributes.addFlashAttribute("flash", new FlashMessage(String.format("Token has expired. Please go to the following link: %s/resendRegistrationToken?token=%s", baseUrl, token), FlashMessage.Status.INFO));
-
             return "redirect:/login";
         }
 
@@ -136,7 +135,7 @@ public class LoginController {
     }
 
     @RequestMapping(value = "/resendRegistrationToken", method = RequestMethod.GET)
-    public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken, Model model) {
+    public String resendRegistrationToken(HttpServletRequest request, @RequestParam("token") String existingToken) {
 
         VerificationToken newToken;
         try {
@@ -147,7 +146,8 @@ public class LoginController {
 
         User alreadyRegisteredUser = newToken.getUser();
 
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(alreadyRegisteredUser, request.getLocale()));
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(alreadyRegisteredUser, request.getLocale(), baseUrl));
 
         return "redirect:/login";
     }

@@ -34,8 +34,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private String subject;
     @Value("${smarttodo.mail.body}")
     private String body;
-    @Value("${smarttodo.mail.url}")
-    private String url;
 
     @Override
     @Async
@@ -49,7 +47,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         service.createVerificationToken(user, token);
 
         String recipientAddress = user.getEmail();
-        String confirmationUrl = url + "/registrationConfirm?token=" + token;
+        String confirmationUrl = String.format("%s/registrationConfirm?token=%s", event.getUrl(), token);
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom(from);
